@@ -1,0 +1,2 @@
+FLASK_APP=instrument_catalog
+FLASK_ENV=development
