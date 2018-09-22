@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}{% endblock %} | Instrument Catalog</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+
+    <header>
+      <div>
+        <h1>Instrument Catalog</h1>
+        <a href="#">Menu</a>
+        {% if logged_in %}
+          <!-- TODO update this URL -->
+          <a href="#logout">Log out</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Log in</a>
+        {% endif %}
+      </div>
+
+      <nav>
+        <h2 class="nav-heading">Menu</h2>
+        <ul>
+          <li class="nav-home"><a href="{{ url_for('index') }}">Home</a></li>
+          {% if logged_in %}
+            <li><a href="{{ url_for('my_instruments') }}">My Instruments</a></li>
+            <li><a href="{{ url_for('new_instrument') }}">Create New Instrument</a></li>
+          {% endif %}
+          <li>
+            <a href="{{ url_for('all_categories') }}">Categories</a>
+            <ul>
+              {% for category in categories %}
+                <li><a href="{{ url_for('one_category', category_id=category.id) }}">{{ category.name }}</a></li>
+              {% endfor %}
+            </ul>
+          </li>
+          <li><a href="{{ url_for('all_instruments') }}">All instruments</a></li>
+          <!-- TODO update this URL -->
+          <li class="nav-github"><a href="#github">Source on GitHub</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container">
+      {% block heading_container %}
+        <h1>{% block heading %}{% endblock %}</h1>
+      {% endblock heading_container %}
+      <main>
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>
