@@ -61,7 +61,8 @@ def all_instruments():
 @app.route('/instruments/<int:instrument_id>/')
 def one_instrument(instrument_id):
     """Display information about a given instrument."""
-    return 'Show details of instrument with id {}.'.format(instrument_id)
+    return render_template('one_instrument.html',
+                           instrument=db.get_instrument(instrument_id))
 
 
 @app.route('/instruments/new')
