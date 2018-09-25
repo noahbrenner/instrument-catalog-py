@@ -14,8 +14,7 @@
         <h1>Instrument Catalog</h1>
         <a href="#">Menu</a>
         {% if logged_in %}
-          <!-- TODO update this URL -->
-          <a href="#logout">Log out</a>
+          <a href="{{ url_for('logout') }}">Log out</a>
         {% else %}
           <a href="{{ url_for('login') }}">Log in</a>
         {% endif %}

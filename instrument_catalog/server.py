@@ -5,12 +5,30 @@ instrument_catalog.server
 Defines server routes, including main application logic.
 """
 import os
-from flask import Flask
+from flask import Flask, render_template, redirect, url_for
+from . import db_stub as db
 
 
 app = Flask(__name__)
 # Other settings are applied using dotenv from .flaskenv file
 app.config.update(SECRET_KEY=os.environ.get('SECRET_KEY', 'dev_key'))
+
+
+# Hacky stubs for global object and logged-in user
+class g:
+    pass
+
+
+class user:
+    id = 1
+
+
+@app.context_processor
+def inject_template_data():
+    """Provide category data used by base template for every request."""
+    return dict(categories=db.get_categories(),
+                logged_in=hasattr(g, 'user'),
+                g=g)
 
 
 @app.route('/')
@@ -70,4 +88,13 @@ def my_instruments():
 @app.route('/login')
 def login():
     """Display the login page."""
+    g.user = user
     return 'Show the login page.'
+
+
+@app.route('/logout')
+def logout():
+    """Log the user out and redirect to the home page."""
+    if hasattr(g, 'user'):
+        del g.user
+    return redirect(url_for('index'))
