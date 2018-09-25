@@ -68,13 +68,14 @@ def one_instrument(instrument_id):
 @app.route('/instruments/new')
 def new_instrument():
     """Display a form for creating a new instrument."""
-    return 'Create a new instrument.'
+    return render_template('new_instrument.html')
 
 
 @app.route('/instruments/<int:instrument_id>/edit')
 def edit_instrument(instrument_id):
     """Display a form for editing an existing instrument."""
-    return 'Edit instrument with id {}.'.format(instrument_id)
+    return render_template('edit_instrument.html',
+                           instrument=db.get_instrument(instrument_id))
 
 
 @app.route('/instruments/<int:instrument_id>/delete')
