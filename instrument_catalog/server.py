@@ -46,7 +46,9 @@ def all_categories():
 @app.route('/categories/<int:category_id>/')
 def one_category(category_id):
     """Display a list of all instruments in a given category."""
-    return 'List all instruments in category with id {}.'.format(category_id)
+    return render_template('one_category.html',
+                           category=db.get_category(category_id),
+                           instruments=db.get_instruments())
 
 
 @app.route('/instruments/')

@@ -1,0 +1,24 @@
+{% macro tile(instrument, heading='h2', logged_in=False, user=None) -%}
+  <article>
+    <{{ heading }}><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a></{{ heading }}>
+    {% if logged_in and user.id == instrument.user_id %}
+      <ul class="instrument-options">
+        <li><a href="{{ url_for('edit_instrument', instrument_id=instrument.id) }}">Edit</a></li>
+        <li><a href="{{ url_for('delete_instrument', instrument_id=instrument.id) }}">Delete</a></li>
+      </ul>
+    {% endif %}
+    <img src="{{ instrument.image }}" alt="{{ instrument.name }}">
+    <div class="tile-details">
+      {% if instrument.alt_names %}
+        <dl>
+          <dt>Alternate names:</dt>
+          {% for name in instrument.alt_names %}
+            <dd>{{ name }}</dd>
+          {% endfor %}
+        </dl>
+      {% endif %}
+      <p>{{ instrument.description | truncate(255) }}</p>
+      <p><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">view full description</a></p>
+    </div>
+  </article>
+{%- endmacro %}
