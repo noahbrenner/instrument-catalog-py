@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "instrument_tile.html" import tile %}
+{% block title %}My Instruments{% endblock %}
+{% block heading %}My Instruments{% endblock %}
+{% block content %}
+  <a href="{{ url_for('new_instrument') }}">Create New Instrument</a>
+  <hr>
+  {% for category in categories %}
+    <section>
+      <h2>{{ category.name }}</h2>
+      <a href="{{ url_for('new_instrument', c=category.id) }}">Create an instrument in this category</a>
+      {% for instrument in instruments %}
+        {% if instrument.category_id == category.id %}
+          {{ tile(instrument, heading='h3', logged_in=logged_in, user=g.user) }}
+        {% endif %}
+      {% endfor %}
+    </section>
+  {% endfor %}
+  <hr>
+{% endblock content %}

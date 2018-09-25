@@ -85,7 +85,8 @@ def delete_instrument(instrument_id):
 @app.route('/my/')
 def my_instruments():
     """Display all instruments that the logged in user has created."""
-    return 'Show all instruments that the logged in user has created.'
+    return render_template('my_instruments.html',
+                           instruments=db.get_instruments())
 
 
 @app.route('/login')
