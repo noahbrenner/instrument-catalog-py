@@ -40,7 +40,7 @@ def index():
 @app.route('/categories/')
 def all_categories():
     """Display a list of all instrument categories."""
-    return 'List all instrument categories.'
+    return render_template('all_categories.html')
 
 
 @app.route('/categories/<int:category_id>/')
