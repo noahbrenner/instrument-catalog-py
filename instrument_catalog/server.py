@@ -34,7 +34,7 @@ def inject_template_data():
 @app.route('/')
 def index():
     """Display the home page."""
-    return 'Home page'
+    return render_template('index.html', instruments=db.get_instruments())
 
 
 @app.route('/categories/')

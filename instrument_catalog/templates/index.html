@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block heading_container %}{% endblock %}{# No heading at the top of this page #}
+{% block content %}
+  {% if logged_in %}
+    <section class="intro-links">
+      <a href="{{ url_for('my_instruments') }}">My Instruments</a>
+      <a href="{{ url_for('new_instrument') }}">Create New Instrument</a>
+    </section>
+  {% endif %}
+  <p>Welcome to the Instrument Catalog! Here you can find quick information about many types of instruments. You can even add your own instruments to this resource if you have an account (<a href="{{ url_for('login') }}">create one here</a> if you haven't yet). Once you're logged in, you access your very own "My Instruments" page, showing all of the instruments you've contributed to the catalog!</p>
+
+  <h2>Explore</h2>
+  <ul>
+    <li>
+      <a href="{{ url_for('all_categories') }}">Instrument Categories</a>
+      <ul>
+        {% for category in categories %}
+          <li><a href="{{ url_for('one_category', category_id=category.id) }}">{{ category.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </li>
+    <li><a href="{{ url_for('all_instruments') }}">All Instruments</a></li>
+  </ul>
+
+  <hr>
+
+  <h2>Newly Added Instruments</h2>
+  {% for instrument in instruments %}
+    <article>
+      <h3><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a></h3>
+      <span>{{ instrument.category }}</span>
+      <img src="{{ instrument.image }}" alt="{{ instrument.name }}">
+      <p>{{ instrument.description | truncate(255) }}</p>
+    </article>
+  {% endfor %}
+{% endblock content %}
