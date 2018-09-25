@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}All Instruments{% endblock %}
+{% block heading %}All Instruments{% endblock %}
+{% block content %}
+  {% for category in categories %}
+    <h2><a href="{{ url_for('one_category', category_id=category.id) }}">{{ category.name }}</a></h2>
+    <ul>
+      {% for instrument in instruments %}
+        {% if instrument.category_id == category.id %}
+          <li>
+            <a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a>
+            {% if instrument.alt_names %}
+              <br>({{ instrument.alt_names | join(', ') }})
+            {% endif %}
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endblock content %}
