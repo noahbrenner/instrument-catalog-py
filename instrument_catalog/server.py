@@ -5,7 +5,7 @@ instrument_catalog.server
 Defines server routes, including main application logic.
 """
 import os
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 from . import db_stub as db
 
 
@@ -92,11 +92,14 @@ def my_instruments():
                            instruments=db.get_instruments())
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     """Display the login page."""
-    g.user = user
-    return 'Show the login page.'
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        g.user = user
+        return redirect(url_for('index'))
 
 
 @app.route('/logout')
