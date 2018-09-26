@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}404 Not Found{% endblock %}
+{% block heading %}404 Not Found{% endblock %}
+{% block content %}
+  <p>Oh no! The URL you requested doesn’t exist here. You might want to check the spelling of the URL or simply visit the <a href="{{ url_for('index') }}">home page</a>.
+{% endblock content %}

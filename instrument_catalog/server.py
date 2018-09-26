@@ -31,6 +31,11 @@ def inject_template_data():
                 g=g)
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('error.html'), 404
+
+
 @app.route('/')
 def index():
     """Display the home page."""
