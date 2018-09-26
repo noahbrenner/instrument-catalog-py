@@ -81,7 +81,8 @@ def edit_instrument(instrument_id):
 @app.route('/instruments/<int:instrument_id>/delete')
 def delete_instrument(instrument_id):
     """Display a form for deleting an existing instrument."""
-    return 'Delete instrument with id {}.'.format(instrument_id)
+    return render_template('delete_instrument.html',
+                           instrument=db.get_instrument(instrument_id))
 
 
 @app.route('/my/')
