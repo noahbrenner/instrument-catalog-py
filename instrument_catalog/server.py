@@ -10,8 +10,6 @@ from . import db_stub as db
 
 
 app = Flask(__name__)
-# Other settings are applied using dotenv from .flaskenv file
-app.config.update(SECRET_KEY=os.environ.get('SECRET_KEY', 'dev_key'))
 
 
 # Hacky stubs for global object and logged-in user
