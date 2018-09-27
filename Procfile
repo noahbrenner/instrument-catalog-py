@@ -1,1 +1,1 @@
-web: gunicorn instrument_catalog:app --log-file -
+web: flask db upgrade; gunicorn instrument_catalog:app --log-file -
