@@ -7,7 +7,7 @@ A webserver for displaying and editing a catalog of musical instruments.
 import os
 from flask_migrate import Migrate
 from .server import app
-from .models import db
+from .models import db, Category
 
 
 __all__ = ['app']
@@ -27,3 +27,11 @@ app.config.update(
 
 db.init_app(app)
 Migrate(app, db)
+
+
+# Initialize rows in the database if they don't exist yet
+# NOTE This is a side effect: The database may change just from importing
+with app.app_context():
+    if len(Category.query.all()) == 0:
+        from . import db_init
+        db_init.init()
