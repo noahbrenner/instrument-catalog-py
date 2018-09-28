@@ -38,7 +38,9 @@ class Instrument(db.Model):
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
                             nullable=False)
-    category = db.relationship('Category', backref='instruments', lazy=True)
+    category = db.relationship('Category', lazy=True,
+                               backref=db.backref('instruments', lazy=True,
+                                                  order_by='Instrument.name'))
 
     alternate_names = db.relationship('AlternateInstrumentName', lazy=False,
                                       order_by='AlternateInstrumentName.index')

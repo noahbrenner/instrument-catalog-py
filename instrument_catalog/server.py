@@ -49,17 +49,16 @@ def all_categories():
 def one_category(category_id):
     """Display a list of all instruments in a given category."""
     category = Category.query.get(category_id)
-    instruments = Instrument.query\
-        .filter_by(category_id=category_id).order_by(Instrument.name).all()
-    return render_template('one_category.html', category=category,
-                           instruments=instruments)
+    return render_template('one_category.html', category=category)
 
 
 @app.route('/instruments/')
 def all_instruments():
     """Display a list of all instruments in all categories."""
-    instruments = Instrument.query.order_by(Instrument.name).all()
-    return render_template('all_instruments.html', instruments=instruments)
+    # No db query -- category data is injected automatically for all requests
+    # and instrument data is associated with each category.
+    # TODO If app scales, we'll want to manually query using `yield_per()`.
+    return render_template('all_instruments.html')
 
 
 @app.route('/instruments/<int:instrument_id>/')
