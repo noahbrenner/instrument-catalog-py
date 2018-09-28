@@ -29,7 +29,7 @@
   {% for instrument in instruments %}
     <article>
       <h3><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a></h3>
-      <span>{{ instrument.category }}</span>
+      <span>{{ instrument.category.name }}</span>
       <img src="{{ instrument.image }}" alt="{{ instrument.name }}">
       <p>{{ instrument.description | truncate(255) }}</p>
     </article>

@@ -12,13 +12,13 @@
   <img src="{{ instrument.image }}" alt="{{ instrument.name }}">
 
   <h3>Category</h3>
-  <a href="{{ url_for('one_category', category_id=instrument.category_id) }}">{{ instrument.category }}</a>
+  <a href="{{ url_for('one_category', category_id=instrument.category_id) }}">{{ instrument.category.name }}</a>
 
-  {% if instrument.alt_names %}
+  {% if instrument.alternate_names %}
     <h3>Alternate Names</h3>
     <ul>
-      {% for name in instrument.alt_names %}
-        <li>{{ name }}</li>
+      {% for alternate in instrument.alternate_names %}
+        <li>{{ alternate.name }}</li>
       {% endfor %}
     </ul>
   {% endif %}

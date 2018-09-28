@@ -42,7 +42,3 @@ class Instrument(db.Model):
 
     alternate_names = db.relationship('AlternateInstrumentName', lazy=False,
                                       order_by='AlternateInstrumentName.index')
-
-    def iter_alt_names(self):
-        for alternate in self.alternate_names:
-            yield alternate.name

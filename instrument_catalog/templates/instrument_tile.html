@@ -9,11 +9,11 @@
     {% endif %}
     <img src="{{ instrument.image }}" alt="{{ instrument.name }}">
     <div class="tile-details">
-      {% if instrument.alt_names %}
+      {% if instrument.alternate_names %}
         <dl>
           <dt>Alternate names:</dt>
-          {% for name in instrument.alt_names %}
-            <dd>{{ name }}</dd>
+          {% for alternate in instrument.alternate_names %}
+            <dd>{{ alternate.name }}</dd>
           {% endfor %}
         </dl>
       {% endif %}

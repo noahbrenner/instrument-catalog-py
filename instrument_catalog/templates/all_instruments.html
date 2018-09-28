@@ -9,8 +9,8 @@
         {% if instrument.category_id == category.id %}
           <li>
             <a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a>
-            {% if instrument.alt_names %}
-              <br>({{ instrument.alt_names | join(', ') }})
+            {% if instrument.alternate_names %}
+              <br>({{ instrument.alternate_names | join(', ', attribute='name') }})
             {% endif %}
           </li>
         {% endif %}

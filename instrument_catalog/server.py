@@ -6,25 +6,21 @@ Defines server routes, including main application logic.
 """
 import os
 from flask import Flask, render_template, request, redirect, url_for
-from . import db_stub as db
+from .models import db, User, Category, Instrument, AlternateInstrumentName
 
 
 app = Flask(__name__)
 
 
-# Hacky stubs for global object and logged-in user
+# Hacky stub for global object
 class g:
     pass
-
-
-class user:
-    id = 1
 
 
 @app.context_processor
 def inject_template_data():
     """Provide category data used by base template for every request."""
-    return dict(categories=db.get_categories(),
+    return dict(categories=Category.query.all(),
                 logged_in=hasattr(g, 'user'),
                 g=g)
 
@@ -37,35 +33,39 @@ def not_found(error):
 @app.route('/')
 def index():
     """Display the home page."""
-    return render_template('index.html', instruments=db.get_instruments())
+    # Assume that newer instruments have higher ID values
+    new_instruments = Instrument.query.order_by(Instrument.id.desc()).limit(3)
+    return render_template('index.html', instruments=new_instruments)
 
 
 @app.route('/categories/')
 def all_categories():
     """Display a list of all instrument categories."""
+    # No db query -- category data is injected automatically for all requests
     return render_template('all_categories.html')
 
 
 @app.route('/categories/<int:category_id>/')
 def one_category(category_id):
     """Display a list of all instruments in a given category."""
-    return render_template('one_category.html',
-                           category=db.get_category(category_id),
-                           instruments=db.get_instruments())
+    category = Category.query.get(category_id)
+    instruments = Instrument.query.filter_by(category_id=category_id).all()
+    return render_template('one_category.html', category=category,
+                           instruments=instruments)
 
 
 @app.route('/instruments/')
 def all_instruments():
     """Display a list of all instruments in all categories."""
-    return render_template('all_instruments.html',
-                           instruments=db.get_instruments())
+    instruments = Instrument.query.all()
+    return render_template('all_instruments.html', instruments=instruments)
 
 
 @app.route('/instruments/<int:instrument_id>/')
 def one_instrument(instrument_id):
     """Display information about a given instrument."""
-    return render_template('one_instrument.html',
-                           instrument=db.get_instrument(instrument_id))
+    instrument = Instrument.query.get(instrument_id)
+    return render_template('one_instrument.html', instrument=instrument)
 
 
 @app.route('/instruments/new')
@@ -77,22 +77,22 @@ def new_instrument():
 @app.route('/instruments/<int:instrument_id>/edit')
 def edit_instrument(instrument_id):
     """Display a form for editing an existing instrument."""
-    return render_template('edit_instrument.html',
-                           instrument=db.get_instrument(instrument_id))
+    instrument = Instrument.query.get(instrument_id)
+    return render_template('edit_instrument.html', instrument=instrument)
 
 
 @app.route('/instruments/<int:instrument_id>/delete')
 def delete_instrument(instrument_id):
     """Display a form for deleting an existing instrument."""
-    return render_template('delete_instrument.html',
-                           instrument=db.get_instrument(instrument_id))
+    instrument = Instrument.query.get(instrument_id)
+    return render_template('delete_instrument.html', instrument=instrument)
 
 
 @app.route('/my/')
 def my_instruments():
     """Display all instruments that the logged in user has created."""
-    return render_template('my_instruments.html',
-                           instruments=db.get_instruments())
+    instruments = Instrument.query.filter_by(user_id=g.user.id).all()
+    return render_template('my_instruments.html', instruments=instruments)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -101,7 +101,8 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        g.user = user
+        if app.config['ENV'] == 'development':
+            g.user = User.query.get(0)
         return redirect(url_for('index'))
 
 
