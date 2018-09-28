@@ -20,7 +20,7 @@ class g:
 @app.context_processor
 def inject_template_data():
     """Provide category data used by base template for every request."""
-    return dict(categories=Category.query.all(),
+    return dict(categories=Category.query.order_by(Category.id).all(),
                 logged_in=hasattr(g, 'user'),
                 g=g)
 
@@ -49,7 +49,8 @@ def all_categories():
 def one_category(category_id):
     """Display a list of all instruments in a given category."""
     category = Category.query.get(category_id)
-    instruments = Instrument.query.filter_by(category_id=category_id).all()
+    instruments = Instrument.query\
+        .filter_by(category_id=category_id).order_by(Instrument.name).all()
     return render_template('one_category.html', category=category,
                            instruments=instruments)
 
@@ -57,7 +58,7 @@ def one_category(category_id):
 @app.route('/instruments/')
 def all_instruments():
     """Display a list of all instruments in all categories."""
-    instruments = Instrument.query.all()
+    instruments = Instrument.query.order_by(Instrument.name).all()
     return render_template('all_instruments.html', instruments=instruments)
 
 
@@ -91,7 +92,8 @@ def delete_instrument(instrument_id):
 @app.route('/my/')
 def my_instruments():
     """Display all instruments that the logged in user has created."""
-    instruments = Instrument.query.filter_by(user_id=g.user.id).all()
+    instruments = Instrument.query\
+        .filter_by(user_id=g.user.id).order_by(Instrument.name).all()
     return render_template('my_instruments.html', instruments=instruments)
 
 
