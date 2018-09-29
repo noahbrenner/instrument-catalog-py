@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block heading_container %}
   {{ super() }}
-  <a id="back-link" href="/">Cancel &amp; go back</a>
+  <a id="backLink" href="/">Cancel &amp; go back</a>
 {% endblock heading_container %}
 {% block content %}
   <p>All sections are required unless marked as <span class="optional">(optional)</span>.</p>
@@ -22,7 +22,7 @@
     <fieldset>
       <legend>Alternate Instrument Names <span class="optional">(optional)</span></legend>
       <label for="alt-names" class="form-label visuallyhidden">Alternate names:</label>
-      <textarea id="alt-names"></textarea>
+      <textarea id="altNames"></textarea>
       <p>Write each alternate instrument name on its own line. For example:</p>
       <pre><kbd>Concert Harp
 Orchestral Harp</kbd></pre>
