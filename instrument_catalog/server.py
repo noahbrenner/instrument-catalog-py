@@ -105,11 +105,19 @@ def edit_instrument(instrument_id):
     return render_template('edit_instrument.html', instrument=instrument)
 
 
-@app.route('/instruments/<int:instrument_id>/delete')
+@app.route('/instruments/<int:instrument_id>/delete', methods=['GET', 'POST'])
 def delete_instrument(instrument_id):
     """Display a form for deleting an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
-    return render_template('delete_instrument.html', instrument=instrument)
+
+    if request.method == 'GET':
+        return render_template('delete_instrument.html', instrument=instrument)
+
+    elif request.method == 'POST':
+        category_id = instrument.category_id
+        db.session.delete(instrument)
+        db.session.commit()
+        return redirect(url_for('one_category', category_id=category_id))
 
 
 @app.route('/my/')

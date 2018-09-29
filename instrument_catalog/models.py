@@ -35,12 +35,13 @@ class Instrument(db.Model):
     description = db.Column(db.String(16384), nullable=False)
     image = db.Column(db.String(512))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
                             nullable=False)
+
     category = db.relationship('Category', lazy=True,
                                backref=db.backref('instruments', lazy=True,
                                                   order_by='Instrument.name'))
 
     alternate_names = db.relationship('AlternateInstrumentName', lazy=False,
-                                      order_by='AlternateInstrumentName.index')
+                                      order_by='AlternateInstrumentName.index',
+                                      cascade='all, delete-orphan')
