@@ -9,7 +9,7 @@
     <fieldset>
       <legend>Instrument Name</legend>
       <label for="name" class="form-label form-required visuallyhidden">Name:</label>
-      <input type="text" id="name">
+      <input type="text" id="name" name="name">
       <p>We recommend capitalizing instrument names, writing out any numbers, and using the singular form (unless the instrument is always plural):</p>
       <dl>
         <dt>Yes:</dt>
@@ -22,7 +22,7 @@
     <fieldset>
       <legend>Alternate Instrument Names <span class="optional">(optional)</span></legend>
       <label for="alt-names" class="form-label visuallyhidden">Alternate names:</label>
-      <textarea id="altNames"></textarea>
+      <textarea id="altNames" name="alt_names"></textarea>
       <p>Write each alternate instrument name on its own line. For example:</p>
       <pre><kbd>Concert Harp
 Orchestral Harp</kbd></pre>
@@ -34,7 +34,7 @@ Orchestral Harp</kbd></pre>
         {% for category in categories %}
           <li>
             <label for="{{ category.id }}">
-              <input type="radio" name="category" value="{{ category.id }}" id="{{ category.id }}">
+              <input type="radio" name="category_id" value="{{ category.id }}" id="{{ category.id }}">
               {{ category.name }}
             </label>
           </li>
@@ -45,7 +45,7 @@ Orchestral Harp</kbd></pre>
     <fieldset>
       <legend>Instrument Image <span class="optional">(optional)</span></legend>
       <label for="image" class="form-label">URL:</label>
-      <input type="url" id="image" placeholder="https://www.example.com/tuba.jpg">
+      <input type="url" id="image" name="image" placeholder="https://www.example.com/tuba.jpg">
       <p>Enter a public URL for an image of this instrument. Prefer URLs starting with “https” instead of “http” if possible. Ideally, the image should be close to square and must be under 500 KB (smaller than that is better).</p>
       <p>The URL must point to the image itself, rather than a webpage which includes the image. This frequently means that the URL should end in <code>.jpg</code>, <code>.png</code>, <code>.gif</code>, or another common image file extension.
     </fieldset>
@@ -53,7 +53,7 @@ Orchestral Harp</kbd></pre>
     <fieldset>
       <legend>Instrument Description</legend>
       <label for="description" class="form-label visuallyhidden">Description</label>
-      <textarea id="description"></textarea>
+      <textarea id="description" name="description"></textarea>
     </fieldset>
 
     <input type="submit" value="{% block button_text %}{% endblock %}">

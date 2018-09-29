@@ -5,6 +5,7 @@ instrument_catalog.server
 Defines server routes, including main application logic.
 """
 import os
+import re
 from flask import Flask, render_template, request, redirect, url_for
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 
@@ -68,10 +69,33 @@ def one_instrument(instrument_id):
     return render_template('one_instrument.html', instrument=instrument)
 
 
-@app.route('/instruments/new')
+@app.route('/instruments/new', methods=['GET', 'POST'])
 def new_instrument():
     """Display a form for creating a new instrument."""
-    return render_template('new_instrument.html')
+    if request.method == 'GET':
+        return render_template('new_instrument.html')
+
+    elif request.method == 'POST':
+        form = request.form
+        instrument = Instrument(name=form['name'],
+                                description=form['description'],
+                                category_id=form['category_id'],
+                                user_id=g.user.id,
+                                image=form.get('image', None))
+
+        if 'alt_names' in form:
+            # Split lines and remove leading, trailing, and extra whitespace
+            alts = filter(None, (re.sub(r'\s+', ' ', s, count=len(s)).strip()
+                                 for s in form['alt_names'].splitlines()))
+            # Add alternate instrument names, if they were provided
+            for index, name in enumerate(alts):
+                instrument.alternate_names.append(
+                    AlternateInstrumentName(name=name, index=index))
+
+        db.session.add(instrument)
+        db.session.commit()
+
+        return redirect(url_for('one_instrument', instrument_id=instrument.id))
 
 
 @app.route('/instruments/<int:instrument_id>/edit')
