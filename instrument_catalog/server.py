@@ -104,11 +104,49 @@ def new_instrument():
         return redirect(url_for('one_instrument', instrument_id=instrument.id))
 
 
-@app.route('/instruments/<int:instrument_id>/edit')
+@app.route('/instruments/<int:instrument_id>/edit', methods=['GET', 'POST'])
 def edit_instrument(instrument_id):
     """Display a form for editing an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
-    return render_template('edit_instrument.html', instrument=instrument)
+
+    if request.method == 'GET':
+        return render_template('edit_instrument.html', instrument=instrument)
+
+    elif request.method == 'POST':
+        form = request.form
+
+        # Update required columns
+        required_columns = ('name', 'description', 'category_id')
+        for key in required_columns:
+            setattr(instrument, key, form[key])
+
+        # Update optional image column
+        instrument.image = request.form.get('image', None)
+
+        # Update alternate names unless they haven't been changed at all
+        new_alt_names = extract_alternate_instrument_names(form['alt_names'])
+        old_alt_names = [alt.name for alt in instrument.alternate_names]
+
+        if not new_alt_names == old_alt_names:
+            # Make sure we don't have more rows than new alternate names
+            del instrument.alternate_names[len(new_alt_names):]
+            # TODO Identify and update existing names to enable atomic commit
+            # We need to commit now, before modifying or adding names, to avoid
+            # failing a UNIQUE constraint in some situations (e.g. re-ordering
+            # rows). This prevents the edit from being atomic, unfortunately.
+            db.session.commit()
+
+            # Update or create new alternate names as needed
+            for index, name in enumerate(new_alt_names):
+                try:
+                    instrument.alternate_names[index].name = name
+                except IndexError:
+                    instrument.alternate_names.append(
+                        AlternateInstrumentName(name=name, index=index))
+
+        db.session.commit()
+
+        return redirect(url_for('one_instrument', instrument_id=instrument_id))
 
 
 @app.route('/instruments/<int:instrument_id>/delete', methods=['GET', 'POST'])

@@ -45,3 +45,13 @@ class Instrument(db.Model):
     alternate_names = db.relationship('AlternateInstrumentName', lazy=False,
                                       order_by='AlternateInstrumentName.index',
                                       cascade='all, delete-orphan')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'image': self.image,
+            'category_id': self.category_id,
+            'alternate_names': [alt.name for alt in self.alternate_names]
+        }

@@ -14,3 +14,19 @@
         };
     }
 })();
+
+
+// Prefill instrument-editing form with the current values
+(function () {
+    if (window.instrument && document.forms.instrumentForm) {
+        var instrument = window.instrument;
+        var fields = document.forms.instrumentForm.elements;
+
+        // Set form values
+        fields.name.value = instrument.name;
+        fields.altNames.value = instrument.alternate_names.join('\n');
+        fields['category' + instrument.category_id].checked = true;
+        fields.image.value = instrument.image;
+        fields.description.value = instrument.description;
+    }
+})();

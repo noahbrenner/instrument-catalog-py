@@ -5,7 +5,7 @@
 {% endblock heading_container %}
 {% block content %}
   <p>All sections are required unless marked as <span class="optional">(optional)</span>.</p>
-  <form action="{% block form_url %}{% endblock %}" method="POST" autocomplete="off">
+  <form action="{% block form_url %}{% endblock %}" method="POST" autocomplete="off" id="instrumentForm">
     <fieldset>
       <legend>Instrument Name</legend>
       <label for="name" class="form-label form-required visuallyhidden">Name:</label>
@@ -34,7 +34,7 @@ Orchestral Harp</kbd></pre>
         {% for category in categories %}
           <li>
             <label for="{{ category.id }}">
-              <input type="radio" name="category_id" value="{{ category.id }}" id="{{ category.id }}">
+              <input type="radio" name="category_id" value="{{ category.id }}" id="category{{ category.id }}">
               {{ category.name }}
             </label>
           </li>
