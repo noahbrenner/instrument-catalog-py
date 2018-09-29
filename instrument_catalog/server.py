@@ -18,6 +18,13 @@ class g:
     pass
 
 
+def extract_alternate_instrument_names(input_string):
+    """Return a normalized list of alternate names from form input."""
+    # Split lines and remove leading, trailing, and extra internal whitespace
+    return list(filter(None, (re.sub(r'\s+', ' ', s.strip(), count=len(s))
+                              for s in input_string.splitlines())))
+
+
 @app.context_processor
 def inject_template_data():
     """Provide category data used by base template for every request."""
@@ -83,14 +90,13 @@ def new_instrument():
                                 user_id=g.user.id,
                                 image=form.get('image', None))
 
+        # Add alternate instrument names, if they were provided
         if 'alt_names' in form:
-            # Split lines and remove leading, trailing, and extra whitespace
-            alts = filter(None, (re.sub(r'\s+', ' ', s, count=len(s)).strip()
-                                 for s in form['alt_names'].splitlines()))
-            # Add alternate instrument names, if they were provided
-            for index, name in enumerate(alts):
-                instrument.alternate_names.append(
-                    AlternateInstrumentName(name=name, index=index))
+            alt_names = extract_alternate_instrument_names(form['alt_names'])
+
+            instrument.alternate_names.extend(
+                AlternateInstrumentName(name=name, index=index)
+                for index, name in enumerate(alt_names))
 
         db.session.add(instrument)
         db.session.commit()
