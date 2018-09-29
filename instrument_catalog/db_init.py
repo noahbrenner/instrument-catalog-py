@@ -7,11 +7,10 @@ should be run only once, after creating a fresh database.  There is no
 check to verify whether the database or these predefined rows already
 exist, so such a check should be performed before running this code.
 """
-import itertools
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 
 
-def init():
+def init(in_prod_environment=True):
     """Initialize rows in the database.
 
     The IDs for each row are hard-coded so that other rows created here can
@@ -23,35 +22,39 @@ def init():
     """
     # === Create users ===
 
-    idx = itertools.count(0)  # Counter for generating IDs
-    user1 = User(name='Admin1', id=next(idx), email='fake@example.com')
-    user2 = User(name='Admin2', id=next(idx), email='madeup@example.com')
+    user1 = User(name='Admin1', email='fake@example.com')
     db.session.add(user1)
-    db.session.add(user2)
+
+    if in_prod_environment:
+        print('Initiating database rows in PRODUCTION environment')
+        # Associate all generated rows with the same admin user
+        user2 = user1
+    else:
+        print('Initiating database rows in DEVELOPMENT environment')
+        # Create an additional user to help with testing permissions
+        user2 = User(name='Admin2', email='madeup@example.com')
+        db.session.add(user2)
 
     # === Create categories ===
 
-    idx = itertools.count(0)  # Create new counter
-    strings = Category(name='Strings', id=next(idx), description=(
+    strings = Category(name='Strings', description=(
         'Instruments which create sound through the vibration of tensioned'
         ' strings. The strings may be set in motion in various ways, including'
         ' plucking, striking, bowing, or even wind.'))
 
-    winds = Category(name='Winds', id=next(idx), description=(
+    winds = Category(name='Winds', description=(
         'Winds description'))
 
-    percussion = Category(name='Percussion', id=next(idx), description=(
+    percussion = Category(name='Percussion', description=(
         'Percussion description'))
 
-    for category in (strings, winds, percussion):
-        db.session.add(category)
+    db.session.add_all([strings, winds, percussion])
 
     # === Create instruments ===
 
-    idx = itertools.count(0)  # Create new counter
     pedal_harp = Instrument(
-        name='Pedal Harp', id=next(idx), image='pedalharp.jpg',
-        category_id=strings.id, user_id=user1.id, description=(
+        name='Pedal Harp', image='pedalharp.jpg',
+        category=strings, user=user1, description=(
             'Pedal harps generally have 48 strings which are plucked with the'
             ' fingers. The strings are tuned to a diatonic scale, but the set'
             ' of notes can be quickly changed by using the pedals.\n\nThe'
@@ -59,17 +62,14 @@ def init():
             ' one note name (every octave of a single note note, such as C).'))
 
     lever_harp = Instrument(
-        name='Lever Harp', id=next(idx), image='leverharp.jpg',
-        category_id=strings.id, user_id=user2.id, description=(
+        name='Lever Harp', image='leverharp.jpg',
+        category=strings, user=user2, description=(
             'it’s another type of harp!'))
 
     flute = Instrument(
-        name='Flute', id=next(idx), image='flute.jpg',
-        category_id=winds.id, user_id=user1.id, description=(
+        name='Flute', image='flute.jpg',
+        category=winds, user=user1, description=(
             'You blow across it and make noise.'))
-
-    for instrument in (pedal_harp, lever_harp, flute):
-        db.session.add(instrument)
 
     # === Create alternate instrument names ===
 
@@ -79,9 +79,9 @@ def init():
     ]
 
     for instrument, names in alternate_names:
-        for index, alt_name in enumerate(names):
-            db.session.add(AlternateInstrumentName(
-                instrument_id=instrument.id, name=alt_name, index=index))
+        instrument.alternate_names.extend(
+            AlternateInstrumentName(name=name, index=index)
+            for index, name in enumerate(names))
 
     # === Commit changes ===
 

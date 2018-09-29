@@ -38,6 +38,8 @@ class Instrument(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
                             nullable=False)
 
+    user = db.relationship('User', lazy=True)
+
     category = db.relationship('Category', lazy=True,
                                backref=db.backref('instruments', lazy=True,
                                                   order_by='Instrument.name'))
