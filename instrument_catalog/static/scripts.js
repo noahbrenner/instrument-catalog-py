@@ -1,3 +1,5 @@
+'use strict';
+
 // Add "back" functionality if the current page has a link with id 'back-link'
 (function () {
     // Thanks for inspiration goes to: https://stackoverflow.com/a/46163215
@@ -28,5 +30,23 @@
         fields['category' + instrument.category_id].checked = true;
         fields.image.value = instrument.image;
         fields.description.value = instrument.description;
+    }
+})();
+
+
+// Display custom message for invalid form input
+(function () {
+    if (document.forms.instrumentForm) {
+        var imageElement = document.forms.instrumentForm.elements.image;
+        var validity = imageElement.validity;
+        var errMessage = 'Please enter a URL starting with "https" or "http".';
+
+        imageElement.addEventListener('input', function (event) {
+            if (validity.typeMismatch || validity.patternMismatch) {
+                imageElement.setCustomValidity(errMessage);
+            } else {
+                imageElement.setCustomValidity('');
+            }
+        });
     }
 })();
