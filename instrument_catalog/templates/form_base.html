@@ -9,7 +9,7 @@
     <fieldset>
       <legend>Instrument Name</legend>
       <label for="name" class="form-label form-required visuallyhidden">Name:</label>
-      <input type="text" id="name" name="name" required maxlength="64">
+      <input type="text" id="name" name="name" size="25" required maxlength="64">
       <p>We recommend capitalizing instrument names, writing out any numbers, and using the singular form (unless the instrument is always plural):</p>
       <dl>
         <dt>Yes:</dt>
@@ -45,7 +45,7 @@ Orchestral Harp</kbd></pre>
     <fieldset>
       <legend>Instrument Image <span class="optional">(optional)</span></legend>
       <label for="image">URL:</label>
-      <input type="url" id="image" name="image" placeholder="https://www.example.com/tuba.jpg">
+      <input type="url" id="image" name="image" placeholder="https://www.example.com/tuba.jpg" spellcheck="false" size="40">
       <p>Enter a public URL for an image of this instrument. Prefer URLs starting with “https” instead of “http” if possible. Ideally, the image should be close to square and must be under 500 KB (smaller than that is better).</p>
       <p>The URL must point to the image itself, rather than a webpage which includes the image. This frequently means that the URL should end in <code>.jpg</code>, <code>.png</code>, <code>.gif</code>, or another common image file extension.
     </fieldset>
