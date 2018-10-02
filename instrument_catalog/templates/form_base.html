@@ -9,7 +9,7 @@
     <fieldset>
       <legend>Instrument Name</legend>
       <label for="name" class="form-label form-required visuallyhidden">Name:</label>
-      <input type="text" id="name" name="name">
+      <input type="text" id="name" name="name" required maxlength="64">
       <p>We recommend capitalizing instrument names, writing out any numbers, and using the singular form (unless the instrument is always plural):</p>
       <dl>
         <dt>Yes:</dt>
@@ -34,7 +34,7 @@ Orchestral Harp</kbd></pre>
         {% for category in categories %}
           <li>
             <label for="category{{ category.id }}">
-              <input type="radio" name="category_id" value="{{ category.id }}" id="category{{ category.id }}">
+              <input type="radio" id="category{{ category.id }}" name="category_id" value="{{ category.id }}" required>
               {{ category.name }}
             </label>
           </li>
@@ -53,7 +53,7 @@ Orchestral Harp</kbd></pre>
     <fieldset>
       <legend>Instrument Description</legend>
       <label for="description" class="visuallyhidden">Description</label>
-      <textarea id="description" name="description"></textarea>
+      <textarea id="description" name="description" required></textarea>
     </fieldset>
 
     <input type="submit" value="{% block button_text %}{% endblock %}">
