@@ -36,6 +36,7 @@
         {% for category in categories %}
           <li>
             <label for="category{{ category.id }}">
+              {# <input> is nested inside <label> so that clicking the space between them will activate the control #}
               <input type="radio" id="category{{ category.id }}" name="category_id" value="{{ category.id }}" required>
               {{ category.name }}
             </label>
