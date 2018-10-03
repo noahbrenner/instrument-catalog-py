@@ -18,11 +18,29 @@ class g:
     pass
 
 
-def extract_alternate_instrument_names(input_string):
+def collapse_spaces(string=None, preserve_newlines=False):
+    """Strip outer and extra internal whitespace, preserving newlines."""
+    regex = r'[ \t\f\v]+' if preserve_newlines else r'\s+'
+    return re.sub(regex, ' ', string.strip()) if string else string
+
+
+def get_alternate_instrument_names(form):
     """Return a normalized list of alternate names from form input."""
-    # Split lines and remove leading, trailing, and extra internal whitespace
-    return list(filter(None, (re.sub(r'\s+', ' ', s.strip(), count=len(s))
-                              for s in input_string.splitlines())))
+    alt_names = []
+
+    for index in range(10):
+        name = form.get('alt_name_{}'.format(index), None)
+
+        if name is None:
+            break
+
+        # Eliminate any extra whitespace
+        name = collapse_spaces(name)
+
+        if name is not '':
+            alt_names.append(name)
+
+    return alt_names
 
 
 @app.context_processor
@@ -90,10 +108,9 @@ def new_instrument():
                                 user_id=g.user.id,
                                 image=form.get('image', None))
 
-        # Add alternate instrument names, if they were provided
-        if 'alt_names' in form:
-            alt_names = extract_alternate_instrument_names(form['alt_names'])
+        alt_names = get_alternate_instrument_names(form)
 
+        if alt_names:
             instrument.alternate_names.extend(
                 AlternateInstrumentName(name=name, index=index)
                 for index, name in enumerate(alt_names))
@@ -124,7 +141,7 @@ def edit_instrument(instrument_id):
         instrument.image = request.form.get('image', None)
 
         # Update alternate names unless they haven't been changed at all
-        new_alt_names = extract_alternate_instrument_names(form['alt_names'])
+        new_alt_names = get_alternate_instrument_names(form)
         old_alt_names = [alt.name for alt in instrument.alternate_names]
 
         if not new_alt_names == old_alt_names:

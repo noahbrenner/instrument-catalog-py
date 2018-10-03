@@ -19,13 +19,15 @@
       </dl>
     </fieldset>
 
-    <fieldset>
+    <fieldset id="altNames_fieldset">
       <legend>Alternate Instrument Names <span class="optional">(optional)</span></legend>
-      <label for="altNames" class="visuallyhidden">Alternate names:</label>
-      <textarea id="altNames" name="alt_names"></textarea>
-      <p>Write each alternate instrument name on its own line. For example:</p>
-      <pre><kbd>Concert Harp
-Orchestral Harp</kbd></pre>
+      <ol>
+        <li>
+          <label for="altName0" class="visuallyhidden">Alternate Name:</label>
+          <input type="text" id="altName0" name="alt_name_0" size="25" maxlength="64">
+        </li>
+      </ol>
+      <button type="button" id="addAltName_btn">Add another name</button>
     </fieldset>
 
     <fieldset>
