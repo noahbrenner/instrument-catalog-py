@@ -30,7 +30,7 @@
     formFields = form.elements;
 
 
-    // Enable creation of additional "alternate instrument name" fields
+    /* Enable creation of additional "alternate instrument name" fields */
 
     function addAltNameElement(event) {
         var MAX_ALT_NAMES = 10;
@@ -78,8 +78,9 @@
     });
 
 
-    // Prefill instrument-editing form with the current values
-    // (`window.instrument` is only populated on the "edit instrument" page)
+    /* Prefill instrument-editing form with the current values */
+
+    // `window.instrument` is only populated on the "edit instrument" page
     if (window.instrument) {
         // Single value data
         formFields.name.value = window.instrument.name;
@@ -96,7 +97,9 @@
     }
 
 
-    // Display custom message for invalid form input
+    /* Display custom message for invalid form input */
+
+    // Image URL
     formFields.image.addEventListener('input', function (event) {
         var element = event.target;
 
