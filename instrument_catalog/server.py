@@ -196,7 +196,7 @@ def login():
         return render_template('login.html')
     elif request.method == 'POST':
         if app.config['ENV'] == 'development':
-            g.user = User.query.get(0)
+            g.user = User.query.get(1)
         return redirect(url_for('index'))
 
 
