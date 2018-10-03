@@ -97,7 +97,7 @@
     }
 
 
-    /* Display custom message for invalid form input */
+    /* Validate form fields */
 
     // Utility function: ' one    two  ' --> 'one two'
     function collapseSpaces(string) {
