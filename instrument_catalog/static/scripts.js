@@ -20,6 +20,7 @@
 
 // Instrument form functionality
 (function () {
+    var MAX_ALT_INSTRUMENT_NAMES = 10;
     var form = document.forms.instrumentForm;
     var formFields;
 
@@ -33,7 +34,6 @@
     /* Enable creation of additional "alternate instrument name" fields */
 
     function addAltNameElement(event) {
-        var MAX_ALT_NAMES = 10;
         var listItems = formFields.altNames_fieldset.getElementsByTagName('li');
         var newIndex = listItems.length;
         var newListItem = listItems[0].cloneNode(true);
@@ -54,7 +54,7 @@
         deleteBtn.addEventListener('click', function () {
             newListItem.parentNode.removeChild(newListItem);
 
-            if (listItems.length < MAX_ALT_NAMES) {
+            if (listItems.length < MAX_ALT_INSTRUMENT_NAMES) {
                 formFields.addAltName_btn.disabled = false;
             }
         });
@@ -63,8 +63,8 @@
         newListItem.appendChild(deleteBtn);
         listItems[0].parentNode.appendChild(newListItem);
 
-        // Disable the "add name" button if we've reached MAX_ALT_NAMES
-        if (listItems.length >= MAX_ALT_NAMES) {
+        // Disable the "add name" button if we've reached the limit on names
+        if (listItems.length >= MAX_ALT_INSTRUMENT_NAMES) {
             formFields.addAltName_btn.disabled = true;
         }
 
@@ -99,7 +99,49 @@
 
     /* Display custom message for invalid form input */
 
-    // Image URL
+    // Utility function: ' one    two  ' --> 'one two'
+    function collapseSpaces(string) {
+        return string
+            .trim()
+            .replace(/\s+/, ' ');
+    }
+
+    // Alternate names do not duplicate earlier names or primary name
+    // Use event delegation to catch events triggered by contained `<input>`s
+    formFields.altNames_fieldset.addEventListener('input', function (event) {
+        var uniqueNames = []; // Instrument names already used in the form
+        var i, element, name; // Loop variables
+
+        // Include the primary instrument name to prevent duplicating it
+        uniqueNames.push(collapseSpaces(formFields.name.value));
+
+        // Check all elements, up to our preset limit
+        for (i = 0; i < MAX_ALT_INSTRUMENT_NAMES; i += 1) {
+            element = formFields['altName' + i];
+
+            if (!element) {
+                break; // No more names to check
+            }
+
+            name = collapseSpaces(element.value);
+
+            if (!name) {
+                element.setCustomValidity('');
+                continue;
+            }
+
+            if (uniqueNames.indexOf(name) === -1) {
+                uniqueNames.push(name);
+                element.setCustomValidity('');
+            } else {
+                element.setCustomValidity(
+                    'Please enter a name not provided above on this page.'
+                );
+            }
+        }
+    });
+
+    // Image URL starts with http(s)
     formFields.image.addEventListener('input', function (event) {
         var element = event.target;
 
