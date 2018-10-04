@@ -4,10 +4,9 @@ instrument_catalog.server
 
 Defines server routes, including main application logic.
 """
-import os
-import re
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for
 from .models import db, User, Category, Instrument, AlternateInstrumentName
+from .validation import get_validated_instrument_data
 
 
 app = Flask(__name__)
@@ -16,31 +15,6 @@ app = Flask(__name__)
 # Hacky stub for global object
 class g:
     pass
-
-
-def collapse_spaces(string=None, preserve_newlines=False):
-    """Strip outer and extra internal whitespace, preserving newlines."""
-    regex = r'[ \t\f\v]+' if preserve_newlines else r'\s+'
-    return re.sub(regex, ' ', string.strip()) if string else string
-
-
-def get_alternate_instrument_names(form):
-    """Return a normalized list of alternate names from form input."""
-    alt_names = []
-
-    for index in range(10):
-        name = form.get('alt_name_{}'.format(index), None)
-
-        if name is None:
-            break
-
-        # Eliminate any extra whitespace
-        name = collapse_spaces(name)
-
-        if name is not '':
-            alt_names.append(name)
-
-    return alt_names
 
 
 @app.context_processor
@@ -101,19 +75,21 @@ def new_instrument():
         return render_template('new_instrument.html')
 
     elif request.method == 'POST':
-        form = request.form
-        instrument = Instrument(name=form['name'],
-                                description=form['description'],
-                                category_id=form['category_id'],
+        data, valid = get_validated_instrument_data(request.form)
+
+        if not valid:
+            return render_template('new_instrument.html', instrument=data)
+
+        instrument = Instrument(name=data['name'],
+                                description=data['description'],
+                                category_id=data['category_id'],
                                 user_id=g.user.id,
-                                image=form.get('image', None))
+                                image=data['image'] or None)
 
-        alt_names = get_alternate_instrument_names(form)
-
-        if alt_names:
+        if data['alternate_names']:
             instrument.alternate_names.extend(
                 AlternateInstrumentName(name=name, index=index)
-                for index, name in enumerate(alt_names))
+                for index, name in enumerate(data['alternate_names']))
 
         db.session.add(instrument)
         db.session.commit()
@@ -127,21 +103,25 @@ def edit_instrument(instrument_id):
     instrument = Instrument.query.get(instrument_id)
 
     if request.method == 'GET':
-        return render_template('edit_instrument.html', instrument=instrument)
+        return render_template('edit_instrument.html',
+                               instrument=instrument.serialize())
 
     elif request.method == 'POST':
-        form = request.form
+        data, valid = get_validated_instrument_data(
+            request.form, instrument_id=instrument.id)
 
-        # Update required columns
-        required_columns = ('name', 'description', 'category_id')
-        for key in required_columns:
-            setattr(instrument, key, form[key])
+        if not valid:
+            # Send cleaned-up (but invalid) data instead of either discarding
+            # the user's edits or saving invalid data to the database.
+            return render_template('edit_instrument.html', instrument=data)
 
-        # Update optional image column
-        instrument.image = request.form.get('image', None)
+        # Update columns in instrument table
+        for key, value in data.items():
+            if not key == 'alternate_names':  # Goes in a different table
+                setattr(instrument, key, value)
 
         # Update alternate names unless they haven't been changed at all
-        new_alt_names = get_alternate_instrument_names(form)
+        new_alt_names = data['alternate_names']
         old_alt_names = [alt.name for alt in instrument.alternate_names]
 
         if not new_alt_names == old_alt_names:

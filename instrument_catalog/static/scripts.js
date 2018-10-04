@@ -80,7 +80,7 @@
 
     /* Prefill instrument-editing form with the current values */
 
-    // `window.instrument` is only populated on the "edit instrument" page
+    // `window.instrument` is only (but not always) populated on form pages
     if (window.instrument) {
         // Single value data
         formFields.name.value = window.instrument.name;

@@ -7,7 +7,3 @@
 {% endblock heading_container %}
 {% block form_url %}{{ url_for('edit_instrument', instrument_id=instrument.id) }}{% endblock %}
 {% block button_text %}Confirm Edit{% endblock %}
-{% block scripts %}
-    <script>window.instrument = {{ instrument.serialize() | tojson | safe }}</script>
-    {{ super() }}
-{% endblock scripts %}

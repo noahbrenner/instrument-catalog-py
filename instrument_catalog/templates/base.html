@@ -40,6 +40,15 @@
           <li class="nav-github"><a href="https://github.com/noahbrenner/instrument-catalog-py">Source on GitHub</a></li>
         </ul>
       </nav>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flashed-messages">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
     </header>
 
     <div class="container">

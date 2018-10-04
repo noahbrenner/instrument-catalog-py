@@ -49,7 +49,7 @@
       <legend>Instrument Image <span class="optional">(optional)</span></legend>
       <label for="image">URL:</label>
       <input type="url" id="image" name="image" placeholder="https://www.example.com/tuba.jpg" spellcheck="false" autocapitalize="none" size="40" pattern="https?.*">
-      <p>Enter a public URL for an image of this instrument. Prefer URLs starting with “https” instead of “http” if possible. Ideally, the image should be close to square and must be under 500 KB (smaller than that is better).</p>
+      <p>Enter a public URL for an image of this instrument. Prefer URLs starting with “https” instead of “http” if possible. Ideally, the image should be close to square and must be under 300 KB (smaller than that is better).</p>
       <p>The URL must point to the image itself, rather than a webpage which includes the image. This frequently means that the URL should end in <code>.jpg</code>, <code>.png</code>, <code>.gif</code>, or another common image file extension.
     </fieldset>
 
@@ -62,3 +62,9 @@
     <button type="submit">{% block button_text %}{% endblock %}</button>
   </form>
 {% endblock content %}
+{% block scripts %}
+    {% if instrument is defined %}
+      <script>window.instrument = {{ instrument | tojson | safe }}</script>
+    {% endif %}
+    {{ super() }}
+{% endblock scripts %}
