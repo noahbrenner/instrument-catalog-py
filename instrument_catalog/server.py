@@ -4,17 +4,35 @@ instrument_catalog.server
 
 Defines server routes, including main application logic.
 """
-from flask import Flask, flash, render_template, request, redirect, url_for
+from flask import (
+    Flask, Markup, flash, render_template, request, redirect, url_for)
+import bleach
+import mistune
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 from .validation import get_validated_instrument_data
 
 
 app = Flask(__name__)
 
+markdown = mistune.Markdown(escape=True)  # Users can't enter raw HTML
+
+bleach_args = dict(
+    tags=['a', 'blockquote', 'br', 'code', 'em', 'h1', 'h2', 'h3', 'h4', 'h5',
+          'h6', 'hr', 'li', 'ol', 'p', 'pre', 'strong', 'ul'],
+    attributes={'a': ['href']},
+    protocols=['http', 'https'],
+    strip=False
+)
+
 
 # Hacky stub for global object
 class g:
     pass
+
+
+@app.template_filter('markdown')
+def markdown_filter(data, inline=False):
+    return Markup(bleach.clean(markdown(data), **bleach_args))
 
 
 @app.context_processor

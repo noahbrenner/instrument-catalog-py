@@ -17,7 +17,7 @@
           {% endfor %}
         </dl>
       {% endif %}
-      <p>{{ instrument.description | truncate(255) }}</p>
+      <p>{{ instrument.description | markdown | striptags | truncate(255) }}</p>
       <p><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">view full description</a></p>
     </div>
   </article>

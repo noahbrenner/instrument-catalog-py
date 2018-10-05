@@ -24,6 +24,5 @@
   {% endif %}
 
   <h3>Description</h3>
-  {# TODO: Allow for a description with multiple paragraphs #}
-  <p>{{ instrument.description }}</p>
+  <section>{{ instrument.description | markdown }}</section>
 {% endblock content %}

@@ -11,10 +11,14 @@ from requests import Timeout, ConnectionError
 from .models import Category, Instrument, AlternateInstrumentName
 
 
-def collapse_spaces(string=None, preserve_newlines=False):
+def collapse_spaces(string=None, markdown_compatible=False):
     """Strip outer and extra internal whitespace, preserving newlines."""
-    regex = r'[ \t\f\v]+' if preserve_newlines else r'\s+'
-    return re.sub(regex, ' ', string.strip()) if string else string
+    if markdown_compatible:
+        # Don't remove inner whitespace in case the user intended a <br>
+        # by writing trailing spaces on a line other than the last one.
+        return string.strip() if string else string
+    else:
+        return re.sub(r'\s+', ' ', string.strip()) if string else string
 
 
 def get_alternate_instrument_names(form):
@@ -95,7 +99,7 @@ def get_validated_instrument_data(form, instrument_id=None):
     instrument = {
             'name': collapse_spaces(form.get('name', '')),
             'description': collapse_spaces(form.get('description', ''),
-                                           preserve_newlines=True),
+                                           markdown_compatible=True),
             'image': collapse_spaces(form.get('image')) or None,
             'category_id': collapse_spaces(form.get('category_id', '')),
             'alternate_names': get_alternate_instrument_names(form)
