@@ -104,23 +104,24 @@ def get_validated_instrument_data(form, instrument_id=None):
     if instrument_id:
         instrument['id'] = instrument_id
 
-    required_keys = {'name', 'category_id', 'description'}
-    keys = set(instrument.keys())
-    alternate_names = instrument['alternate_names']
+    required_columns = {'name', 'category_id', 'description'}
+    input_columns = set(instrument.keys())
+    input_alternate_names = instrument['alternate_names']
 
     # Test: All required fields are present and are not blank
-    if not (required_keys.issubset(keys)
-            and all(instrument[key] for key in required_keys)):
+    if not (required_columns.issubset(input_columns)
+            and all(instrument[key] for key in required_columns)):
         is_valid = False
-        flash('Required data is missing: {}'.format(required_keys - keys))
+        flash('Required data is missing: {columns}'
+              .format(columns=', '.join(required_columns - input_columns)))
 
     # Test: Alternate names do not duplicate primary name
-    if instrument.get('name') in alternate_names:
+    if instrument.get('name') in input_alternate_names:
         is_valid = False
         flash('Alternate names must not include the primary name.')
 
     # Test: Alternate names do not duplicate each other
-    if len(alternate_names) > len(set(alternate_names)):
+    if len(input_alternate_names) > len(set(input_alternate_names)):
         is_valid = False
         flash('Alternate names must not duplicate other alternate names.')
 
