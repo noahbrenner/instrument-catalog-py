@@ -8,7 +8,7 @@
       {% if logged_in %}
         <a href="{{ url_for('new_instrument', c=category.id) }}">Create an instrument in this category</a>
       {% endif %}
-      <p>{{ category.description }}</p>
+      {{ category.description | markdown }}
       <p>Examples include...</p>{# TODO list and link to examples #}
     </article>
   {% endfor %}

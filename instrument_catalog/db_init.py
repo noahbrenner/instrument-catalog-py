@@ -7,6 +7,7 @@ should be run only once, after creating a fresh database.  There is no
 check to verify whether the database or these predefined rows already
 exist, so such a check should be performed before running this code.
 """
+from textwrap import dedent
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 
 
@@ -37,16 +38,16 @@ def init(in_prod_environment=True):
 
     # === Create categories ===
 
-    strings = Category(name='Strings', description=(
-        'Instruments which create sound through the vibration of tensioned'
-        ' strings. The strings may be set in motion in various ways, including'
-        ' plucking, striking, bowing, or even wind.'))
+    strings = Category(name='Strings', description=dedent("""\
+        Instruments which create sound through the vibration of tensioned
+        strings. The strings may be set in motion in various ways, including
+        plucking, striking, bowing, or even wind."""))
 
-    winds = Category(name='Winds', description=(
-        'Winds description'))
+    winds = Category(name='Winds', description=dedent("""\
+        'Winds description"""))
 
-    percussion = Category(name='Percussion', description=(
-        'Percussion description'))
+    percussion = Category(name='Percussion', description=dedent("""\
+        'Percussion description"""))
 
     db.session.add_all([strings, winds, percussion])
 
@@ -54,22 +55,23 @@ def init(in_prod_environment=True):
 
     pedal_harp = Instrument(
         name='Pedal Harp', image='pedalharp.jpg',
-        category=strings, user=user1, description=(
-            'Pedal harps generally have 48 strings which are plucked with the'
-            ' fingers. The strings are tuned to a diatonic scale, but the set'
-            ' of notes can be quickly changed by using the pedals.\n\nThe'
-            ' instrument has 7 pedals, each of which controls the pitch of'
-            ' one note name (every octave of a single note note, such as C).'))
+        category=strings, user=user1, description=dedent("""\
+            Pedal harps generally have 48 strings which are plucked with the
+            fingers. The strings are tuned to a diatonic scale, but the set of
+            notes can be quickly changed by using the pedals.
+
+            The instrument has 7 pedals, each of which controls the pitch of
+            one note name (every octave of a single note note, such as C)."""))
 
     lever_harp = Instrument(
         name='Lever Harp', image='leverharp.jpg',
-        category=strings, user=user2, description=(
-            'it’s another type of harp!'))
+        category=strings, user=user2, description=dedent("""\
+            It’s another type of harp!"""))
 
     flute = Instrument(
         name='Flute', image='flute.jpg',
-        category=winds, user=user1, description=(
-            'You blow across it and make noise.'))
+        category=winds, user=user1, description=dedent("""\
+            You blow across it and make noise."""))
 
     # === Create alternate instrument names ===
 

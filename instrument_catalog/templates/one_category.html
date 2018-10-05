@@ -3,7 +3,7 @@
 {% block title %}{{ category.name }}{% endblock %}
 {% block heading %}{{ category.name }}{% endblock %}
 {% block content %}
-  <p>{{ category.description }}</p>
+  {{ category.description | markdown }}
   <a href="{{ url_for('new_instrument', c=category.id) }}">Create an instrument in this category</a>
   <hr>
   {% if category.instruments %}
