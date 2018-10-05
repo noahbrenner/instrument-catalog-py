@@ -9,7 +9,7 @@
     <fieldset>
       <legend>Instrument Name</legend>
       <label for="name" class="form-label form-required visuallyhidden">Name:</label>
-      <input type="text" id="name" name="name" autocapitalize="words" size="25" required maxlength="64">
+      <input type="text" id="name" name="name" autocapitalize="words" size="25" required maxlength="128">
       <p>We recommend capitalizing instrument names, writing out any numbers, and using the singular form (unless the instrument is always plural):</p>
       <dl>
         <dt>Yes:</dt>
@@ -24,7 +24,7 @@
       <ol>
         <li>
           <label for="altName0" class="visuallyhidden">Alternate Name:</label>
-          <input type="text" id="altName0" name="alt_name_0" autocapitalize="words" size="25" maxlength="64">
+          <input type="text" id="altName0" name="alt_name_0" autocapitalize="words" size="25" maxlength="128">
         </li>
       </ol>
       <button type="button" id="addAltName_btn">Add another name</button>
@@ -48,7 +48,7 @@
     <fieldset>
       <legend>Instrument Image <span class="optional">(optional)</span></legend>
       <label for="image">URL:</label>
-      <input type="url" id="image" name="image" placeholder="https://www.example.com/tuba.jpg" spellcheck="false" autocapitalize="none" size="40" pattern="https?.*">
+      <input type="url" id="image" name="image" placeholder="https://www.example.com/tuba.jpg" spellcheck="false" autocapitalize="none" size="512" pattern="https?.*">
       <p>Enter a public URL for an image of this instrument. Prefer URLs starting with “https” instead of “http” if possible. Ideally, the image should be close to square and must be under 300 KB (smaller than that is better).</p>
       <p>The URL must point to the image itself, rather than a webpage which includes the image. This frequently means that the URL should end in <code>.jpg</code>, <code>.png</code>, <code>.gif</code>, or another common image file extension.
     </fieldset>
@@ -56,7 +56,7 @@
     <fieldset>
       <legend>Instrument Description</legend>
       <label for="description" class="visuallyhidden">Description</label>
-      <textarea id="description" name="description" autocapitalize="sentences" required maxlength="16000"></textarea>
+      <textarea id="description" name="description" autocapitalize="sentences" required maxlength="16384"></textarea>
     </fieldset>
 
     <button type="submit">{% block button_text %}{% endblock %}</button>

@@ -8,7 +8,7 @@ import re
 from flask import flash
 import requests
 from requests import Timeout, ConnectionError
-from .models import Category
+from .models import Category, Instrument, AlternateInstrumentName
 
 
 def collapse_spaces(string=None, preserve_newlines=False):
@@ -105,6 +105,7 @@ def get_validated_instrument_data(form, instrument_id=None):
         instrument['id'] = instrument_id
 
     required_columns = {'name', 'category_id', 'description'}
+    string_columns = ['name', 'description', 'image']
     input_columns = set(instrument.keys())
     input_alternate_names = instrument['alternate_names']
 
@@ -114,6 +115,31 @@ def get_validated_instrument_data(form, instrument_id=None):
         is_valid = False
         flash('Required data is missing: {columns}'
               .format(columns=', '.join(required_columns - input_columns)))
+
+    # Test: No string for the instrument table is over its character limit
+    db_instrument_columns = Instrument.__table__.c
+    oversized_instrument_columns = []
+
+    for column in string_columns:
+        limit = db_instrument_columns[column].type.length
+        if instrument[column] and len(instrument[column]) > limit:
+            oversized_instrument_columns.append((column, limit))
+
+    if oversized_instrument_columns:
+        is_valid = False
+        for column, limit in oversized_instrument_columns:
+            flash('Instrument {field} is over the limit of {num} characters.'
+                  .format(field=column, num=limit))
+
+    # Test: No alternate name is over the character limit
+    alt_name_limit = AlternateInstrumentName.__table__.c['name'].type.length
+    oversized_alt_names = [name for name in input_alternate_names
+                           if len(name) > alt_name_limit]
+    if oversized_alt_names:
+        is_valid = False
+        for name in oversized_alt_names:
+            flash('Alternate name "{name}" is over the limit of'
+                  ' {num} characters.'.format(name=name, num=alt_name_limit))
 
     # Test: Alternate names do not duplicate primary name
     if instrument.get('name') in input_alternate_names:
