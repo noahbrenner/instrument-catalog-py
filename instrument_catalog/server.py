@@ -86,7 +86,7 @@ def one_instrument(instrument_id):
     return render_template('one_instrument.html', instrument=instrument)
 
 
-@app.route('/instruments/new', methods=['GET', 'POST'])
+@app.route('/instruments/new', methods=('GET', 'POST'))
 def new_instrument():
     """Display a form for creating a new instrument."""
     if request.method == 'GET':
@@ -115,7 +115,7 @@ def new_instrument():
         return redirect(url_for('one_instrument', instrument_id=instrument.id))
 
 
-@app.route('/instruments/<int:instrument_id>/edit', methods=['GET', 'POST'])
+@app.route('/instruments/<int:instrument_id>/edit', methods=('GET', 'POST'))
 def edit_instrument(instrument_id):
     """Display a form for editing an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
@@ -164,7 +164,7 @@ def edit_instrument(instrument_id):
         return redirect(url_for('one_instrument', instrument_id=instrument_id))
 
 
-@app.route('/instruments/<int:instrument_id>/delete', methods=['GET', 'POST'])
+@app.route('/instruments/<int:instrument_id>/delete', methods=('GET', 'POST'))
 def delete_instrument(instrument_id):
     """Display a form for deleting an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
@@ -187,7 +187,7 @@ def my_instruments():
     return render_template('my_instruments.html', instruments=instruments)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=('GET', 'POST'))
 def login():
     """Display the login page."""
     if request.method == 'GET':
