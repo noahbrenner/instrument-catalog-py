@@ -8,11 +8,13 @@ from flask import (
     Flask, Markup, flash, render_template, request, redirect, url_for)
 import bleach
 import mistune
+from . import api
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 from .validation import get_validated_instrument_data
 
 
 app = Flask(__name__)
+app.register_blueprint(api.bp, url_prefix='/api')
 
 markdown = mistune.Markdown(escape=True)  # Users can't enter raw HTML
 

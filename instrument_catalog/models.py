@@ -15,6 +15,13 @@ class Category(db.Model):
     name = db.Column(db.String(64), unique=True, nullable=False)
     description = db.Column(db.String(16384), nullable=False)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description
+        }
+
 
 class AlternateInstrumentName(db.Model):
     __table_args__ = (
