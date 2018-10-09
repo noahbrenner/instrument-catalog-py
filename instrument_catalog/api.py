@@ -4,8 +4,9 @@ instrument_catalog.api
 
 Defines routes for JSON API.
 """
-from flask import Blueprint, g, jsonify, request
+from flask import Blueprint, g, get_flashed_messages, jsonify, request, url_for
 from .models import db, User, Category, Instrument, AlternateInstrumentName
+from .validation import get_validated_instrument_data
 
 
 bp = Blueprint('api', __name__)
@@ -60,7 +61,28 @@ def instruments_api():
         return api_jsonify(all_instruments)
 
     elif request.method == 'POST':
-        pass
+        instrument_data, valid = get_validated_instrument_data(request.json)
+
+        if not valid:
+            errors = list(get_flashed_messages())
+            return api_jsonify(instrument_data, errors), 400  # Bad Request
+        else:
+            alternate_names = instrument_data.pop('alternate_names')
+
+            # Create the requested database entry
+            instrument = Instrument(user_id=g.user.id, **instrument_data)
+
+            instrument.alternate_names.extend(
+                AlternateInstrumentName(name=name, index=index)
+                for index, name in enumerate(alternate_names))
+
+            db.session.add(instrument)
+            db.session.commit()
+
+            status_code = 201  # Created
+            headers = {'Location': url_for('one_instrument',
+                                           instrument_id=instrument.id)}
+            return api_jsonify(instrument.serialize()), status_code, headers
 
 
 @bp.route('/instruments/<int:instrument_id>/',
