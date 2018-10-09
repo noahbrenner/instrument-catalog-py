@@ -97,8 +97,12 @@ def validate_image_url(url):
     return url, is_valid
 
 
-def get_validated_instrument_data(form, instrument_id=None):
-    """Validate and return normalized data from instrument form.
+def get_validated_instrument_data(form, existing_instrument=None):
+    """Validate and return normalized data from instrument form or API.
+
+    Args:
+        existing_instrument (Instrument): An optional argument, only
+            needed when the key 'name' is not included in `form`.
 
     Returns:
         tuple[dict, bool]: The normalized data and whether it is valid.
@@ -109,23 +113,26 @@ def get_validated_instrument_data(form, instrument_id=None):
 
     # === Copy form data into `instrument` and normalize values === #
 
-    instrument = {
-            'name': collapse_spaces(str(form.get('name', ''))),
-            'description': collapse_spaces(str(form.get('description', '')),
-                                           markdown_compatible=True),
-            'category_id': collapse_spaces(str(form.get('category_id', ''))),
-            'alternate_names': get_alternate_instrument_names(form)
-    }
+    instrument = {}
 
-    # `image` is optional
-    if 'image' in form:
-        instrument['image'] = collapse_spaces(str(form.get('image', '')))
+    # `id` and `user_id` are not validated; their validity is context-dependent
+    instrument_table_columns = ['name', 'description', 'image', 'category_id']
+
+    for key in instrument_table_columns:
+        if key in form:
+            instrument[key] = collapse_spaces(
+                str(form.get(key, '')),
+                markdown_compatible=(key == 'description'))
+
+    alternate_names = get_alternate_instrument_names(form)
+    if alternate_names:
+        instrument['alternate_names'] = alternate_names
 
     # Reference variables
     required_columns = {'name', 'category_id', 'description'}
-    string_columns = ['name', 'description', 'image']
-    input_columns = set(key for key, value in instrument.items() if value)
-    input_alternate_names = instrument['alternate_names']
+    string_columns = {'name', 'description', 'image'}
+    input_columns = set(key for key, value in instrument.items()
+                        if value or value is not 0)
 
     # === Begin tests === #
 
@@ -135,57 +142,57 @@ def get_validated_instrument_data(form, instrument_id=None):
         flash('Required data is missing: {columns}'
               .format(columns=', '.join(required_columns - input_columns)))
 
-    # Test: No string for the instrument table is over its character limit
-    db_instrument_columns = Instrument.__table__.c
-    oversized_instrument_columns = []
+    if any(key in string_columns for key in input_columns):
+        db_instrument_columns = Instrument.__table__.c
 
-    for column in string_columns:
-        limit = db_instrument_columns[column].type.length
-        if column in instrument and len(instrument[column]) > limit:
-            oversized_instrument_columns.append((column, limit))
+        # Test: No string for the instrument table is over its character limit
+        for column in input_columns.intersection(string_columns):
+            length_limit = db_instrument_columns[column].type.length
 
-    if oversized_instrument_columns:
-        is_valid = False
-        for column, limit in oversized_instrument_columns:
-            flash('Instrument {field} is over the limit of {num} characters.'
-                  .format(field=column, num=limit))
+            if len(instrument[column]) > length_limit:
+                is_valid = False
+                flash('Provided {field} is over the limit of {num} characters.'
+                      .format(field=column, num=limit))
 
-    # Test: No alternate name is over the character limit
-    alt_name_limit = AlternateInstrumentName.__table__.c['name'].type.length
-    oversized_alt_names = [name for name in input_alternate_names
-                           if len(name) > alt_name_limit]
-    if oversized_alt_names:
-        is_valid = False
-        for name in oversized_alt_names:
-            flash('Alternate name "{name}" is over the limit of'
-                  ' {num} characters.'.format(name=name, num=alt_name_limit))
+    if 'alternate_names' in instrument:
+        # Test: No alternate name is over the character limit
+        length_limit = AlternateInstrumentName.__table__.c['name'].type.length
 
-    # Test: Alternate names do not duplicate primary name
-    if instrument.get('name') in input_alternate_names:
-        is_valid = False
-        flash('Alternate names must not include the primary name.')
+        for name in instrument['alternate_names']:
+            if len(name) > length_limit:
+                is_valid = False
+                flash('Alternate name "{name}" is over the limit of'
+                      ' {num} characters.'.format(name=name, num=length_limit))
 
-    # Test: Alternate names do not duplicate each other
-    if len(input_alternate_names) > len(set(input_alternate_names)):
-        is_valid = False
-        flash('Alternate names must not duplicate other alternate names.')
+        # Test: Alternate names do not duplicate primary name
+        instrument_name = instrument.get('name', existing_instrument.id)
 
-    # If the 'category_id' is '', it has already been reported as missing
-    if not instrument['category_id'] == '':
-        try:
-            # Test: Category ID is an integer (NOTE '1.2' becomes 1)
-            instrument['category_id'] = int(instrument['category_id'])
-        except ValueError:
+        if instrument_name in instrument['alternate_names']:
             is_valid = False
-            flash('An invalid category ID was provided.')
-        else:
-            # Test: Category exists in the database
-            if Category.query.get(instrument['category_id']) is None:
+            flash('Alternate names must not include the primary name.')
+
+        # Test: Alternate names do not duplicate each other
+        if len(alternate_names) > len(set(alternate_names)):
+            is_valid = False
+            flash('Alternate names must not duplicate other alternate names.')
+
+    if 'category_id' in instrument:
+        # If the 'category_id' is '', it has already been reported as missing
+        if not instrument['category_id'] == '':
+            try:
+                # Test: Category ID is an integer (NOTE '1.2' becomes 1)
+                instrument['category_id'] = int(instrument['category_id'])
+            except ValueError:
                 is_valid = False
                 flash('An invalid category ID was provided.')
+            else:
+                # Test: Category exists in the database
+                if Category.query.get(instrument['category_id']) is None:
+                    is_valid = False
+                    flash('An invalid category ID was provided.')
 
-    # Test: Image URL is valid and meets our requirements
     if 'image' in instrument:
+        # Test: Image URL is valid and meets our requirements
         validated_url, image_is_valid = validate_image_url(instrument['image'])
 
         instrument['image'] = validated_url

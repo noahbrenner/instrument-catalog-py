@@ -127,8 +127,7 @@ def edit_instrument(instrument_id):
                                instrument=instrument.serialize())
 
     elif request.method == 'POST':
-        data, valid = get_validated_instrument_data(
-            request.form, instrument_id=instrument.id)
+        data, valid = get_validated_instrument_data(request.form)
 
         if not valid:
             # Send cleaned-up (but invalid) data instead of either discarding
