@@ -23,18 +23,30 @@ def collapse_spaces(string=None, markdown_compatible=False):
 
 def get_alternate_instrument_names(form):
     """Return a normalized list of alternate names from form input."""
-    alt_names = []
+    # From the API, we receive a list of alternate names directly
+    if 'alternate_names' in form:
+        if isinstance(form.get('alternate_names'), list):
+            alt_names = [collapse_spaces(str(name))
+                         for name in form['alternate_names']
+                         if name]
+        else:
+            flash('`alternate_names` must be an array of strings.')
+            alt_names = []
 
-    for index in range(10):
-        name = form.get('alt_name_{}'.format(index), None)
+    # From the HTML form, each alternate name is a separate field
+    else:
+        alt_names = []
 
-        if name is None:
-            break
+        for index in range(10):
+            name_key = 'alt_name_{}'.format(index)
 
-        name = collapse_spaces(name)
+            if name_key not in form:
+                break
 
-        if name is not '':
-            alt_names.append(name)
+            name = collapse_spaces(str(form.get(name_key, '')))
+
+            if name is not '':
+                alt_names.append(name)
 
     return alt_names
 
@@ -95,27 +107,30 @@ def get_validated_instrument_data(form, instrument_id=None):
     """
     is_valid = True
 
-    # Copy form data into `instrument`, while normalizing values
+    # === Copy form data into `instrument` and normalize values === #
+
     instrument = {
-            'name': collapse_spaces(form.get('name', '')),
-            'description': collapse_spaces(form.get('description', ''),
+            'name': collapse_spaces(str(form.get('name', ''))),
+            'description': collapse_spaces(str(form.get('description', '')),
                                            markdown_compatible=True),
-            'image': collapse_spaces(form.get('image')) or None,
-            'category_id': collapse_spaces(form.get('category_id', '')),
+            'category_id': collapse_spaces(str(form.get('category_id', ''))),
             'alternate_names': get_alternate_instrument_names(form)
     }
-    # `instrument_id` exists when editing, not when creating a new instrument
-    if instrument_id:
-        instrument['id'] = instrument_id
 
+    # `image` is optional
+    if 'image' in form:
+        instrument['image'] = collapse_spaces(str(form.get('image', '')))
+
+    # Reference variables
     required_columns = {'name', 'category_id', 'description'}
     string_columns = ['name', 'description', 'image']
-    input_columns = set(instrument.keys())
+    input_columns = set(key for key, value in instrument.items() if value)
     input_alternate_names = instrument['alternate_names']
 
+    # === Begin tests === #
+
     # Test: All required fields are present and are not blank
-    if not (required_columns.issubset(input_columns)
-            and all(instrument[key] for key in required_columns)):
+    if not required_columns.issubset(input_columns):
         is_valid = False
         flash('Required data is missing: {columns}'
               .format(columns=', '.join(required_columns - input_columns)))
@@ -126,7 +141,7 @@ def get_validated_instrument_data(form, instrument_id=None):
 
     for column in string_columns:
         limit = db_instrument_columns[column].type.length
-        if instrument[column] and len(instrument[column]) > limit:
+        if column in instrument and len(instrument[column]) > limit:
             oversized_instrument_columns.append((column, limit))
 
     if oversized_instrument_columns:
@@ -155,20 +170,22 @@ def get_validated_instrument_data(form, instrument_id=None):
         is_valid = False
         flash('Alternate names must not duplicate other alternate names.')
 
-    try:
-        # Test: Category ID is an integer
-        instrument['category_id'] = int(instrument['category_id'])
-    except ValueError:
-        is_valid = False
-        flash('An invalid category ID was provided.')
-    else:
-        # Test: Category exists in the database
-        if Category.query.get(instrument.get('category_id')) is None:
+    # If the 'category_id' is '', it has already been reported as missing
+    if not instrument['category_id'] == '':
+        try:
+            # Test: Category ID is an integer (NOTE '1.2' becomes 1)
+            instrument['category_id'] = int(instrument['category_id'])
+        except ValueError:
             is_valid = False
             flash('An invalid category ID was provided.')
+        else:
+            # Test: Category exists in the database
+            if Category.query.get(instrument['category_id']) is None:
+                is_valid = False
+                flash('An invalid category ID was provided.')
 
     # Test: Image URL is valid and meets our requirements
-    if instrument['image'] is not None:
+    if 'image' in instrument:
         validated_url, image_is_valid = validate_image_url(instrument['image'])
 
         instrument['image'] = validated_url
