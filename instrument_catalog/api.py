@@ -90,6 +90,11 @@ def instruments_api():
 def one_instrument_api(instrument_id):
     instrument = Instrument.query.get(instrument_id)
 
+    # We can't return or modify a non-existent instrument, but DELETE is OK
+    if instrument is None and request.method != 'DELETE':
+        errors = ['The requested instrument id does not exist.']
+        return api_jsonify({}, errors), 404  # Not Found
+
     if request.method == 'GET':
         return api_jsonify(instrument.serialize())
 
@@ -135,7 +140,20 @@ def one_instrument_api(instrument_id):
             return api_jsonify(instrument.serialize()), 200  # OK
 
     elif request.method == 'DELETE':
-        pass
+        # DELETE requests are idempotent, so we return a successful response
+        # even if `instrument_id` is not in the database.
+        if instrument is not None:
+            if instrument.user_id == g.user.id:
+                db.session.delete(instrument)
+                db.session.commit()
+            else:
+                errors = ['You must authenticate as the user who created'
+                          ' this instrument in order to modify it.']
+                data = {'instrument_id': instrument_id}
+                return api_jsonify(data, errors), 403  # Forbidden
+
+        data = {'deleted_instrument_id': instrument_id}
+        return api_jsonify(data), 200  # OK
 
 
 @bp.route('/myinstruments/')
