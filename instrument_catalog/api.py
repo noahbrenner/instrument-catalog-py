@@ -94,7 +94,45 @@ def one_instrument_api(instrument_id):
         return api_jsonify(instrument.serialize())
 
     elif request.method == 'PUT':
-        pass
+        # Only the user who created `instrument` can modify it
+        if instrument.user_id != g.user.id:
+            errors = ['You must authenticate as the user who created'
+                      ' this instrument in order to modify it.']
+            return api_jsonify({}, errors), 403  # Forbidden
+
+        instrument_data, valid = get_validated_instrument_data(
+            request.json, existing_instrument=instrument.serialize())
+
+        if not valid:
+            errors = list(get_flashed_messages())
+            instrument_data['id'] = instrument_id  # Help with debugging
+            return api_jsonify(instrument_data, errors), 400  # Bad Request
+        else:
+            new_alt_names = instrument_data.pop('alternate_names')
+            old_alt_names = [alt.name for alt in instrument.alternate_names]
+
+            for key, value in instrument_data.keys():
+                setattr(instrument, key, value)
+
+            if new_alternate_names != old_alt_names:
+                # Make sure we don't have more rows than new alternate names
+                del instrument.alternate_names[len(new_alt_names):]
+                # TODO Figure out how to make an atomic commit
+                # We need to commit now, before modifying or adding names, to
+                # avoid failing a UNIQUE constraint in some situations.
+                # Committing early prevents the edit from being atomic.
+                db.session.commit()
+
+                # Update or create new alternate names as needed
+                for index, name in enumerate(new_alt_names):
+                    try:
+                        instrument.alternate_names[index].name = name
+                    except IndexError:
+                        instrument.alternate_names.append(
+                            AlternateInstrumentName(name=name, index=index))
+
+            db.session.commit()  # TODO put this in a try...except block?
+            return api_jsonify(instrument.serialize()), 200  # OK
 
     elif request.method == 'DELETE':
         pass

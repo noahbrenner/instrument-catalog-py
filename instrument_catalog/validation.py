@@ -5,7 +5,7 @@ instrument_catalog.validation
 Validates user input from instrument create/edit form.
 """
 import re
-from flask import flash
+from flask import flash, request
 import requests
 from requests import Timeout, ConnectionError
 from .models import Category, Instrument, AlternateInstrumentName
@@ -138,9 +138,11 @@ def get_validated_instrument_data(form, existing_instrument=None):
 
     # Test: All required fields are present and are not blank
     if not required_columns.issubset(input_columns):
-        is_valid = False
-        flash('Required data is missing: {columns}'
-              .format(columns=', '.join(required_columns - input_columns)))
+        # PUT requests do not need to specify all fields, only those to update
+        if request.method != 'PUT':
+            is_valid = False
+            flash('Required data is missing: {columns}'
+                  .format(columns=', '.join(required_columns - input_columns)))
 
     if any(key in string_columns for key in input_columns):
         db_instrument_columns = Instrument.__table__.c
