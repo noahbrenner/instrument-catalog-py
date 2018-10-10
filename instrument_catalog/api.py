@@ -5,11 +5,19 @@ instrument_catalog.api
 Defines routes for JSON API.
 """
 from flask import Blueprint, g, get_flashed_messages, jsonify, request, url_for
+from flask_limiter import Limiter
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 from .validation import get_validated_instrument_data
 
 
 bp = Blueprint('api', __name__)
+
+# TODO If app scales, we'll want to use `moving-window` and redis
+rate_limiter = Limiter(strategy='fixed-window',
+                       storage_uri='memory://',
+                       key_func=lambda: g.user.id)
+
+rate_limit = rate_limiter.shared_limit('50/minute;2/second', scope='api')
 
 
 # Temporary stub for testing authentication
@@ -29,7 +37,15 @@ def api_jsonify(data, errors=None):
     return jsonify(successful=not errors, errors=errors, data=data)
 
 
+@bp.errorhandler(429)
+def rate_limit_handler(error):
+    """Return JSON response for requests over the rate limit."""
+    errors = ['Rate limit exceeded: {}'.format(error.description)]
+    return api_jsonify({}, errors), 429
+
+
 @bp.route('/categories/')
+@rate_limit
 def categories_api():
     """API endpoint representing all categories."""
     all_categories = [c.serialize() for c in Category.query]
@@ -37,6 +53,7 @@ def categories_api():
 
 
 @bp.route('/categories/<int:category_id>/')
+@rate_limit
 def one_category_api(category_id):
     """API endpoint for a single category."""
     one_category = Category.query.get(category_id).serialize()
@@ -44,6 +61,7 @@ def one_category_api(category_id):
 
 
 @bp.route('/categories/<int:category_id>/instruments/')
+@rate_limit
 def one_category_instruments_api(category_id):
     """API endpoint for instruments in a single category."""
     category_instruments = [
@@ -54,6 +72,7 @@ def one_category_instruments_api(category_id):
 
 
 @bp.route('/instruments/', methods=('GET', 'POST'))
+@rate_limit
 def instruments_api():
     """API endpoint for creating or listing instruments."""
     if request.method == 'GET':
@@ -87,6 +106,7 @@ def instruments_api():
 
 @bp.route('/instruments/<int:instrument_id>/',
           methods=('GET', 'PUT', 'DELETE'))
+@rate_limit
 def one_instrument_api(instrument_id):
     instrument = Instrument.query.get(instrument_id)
 
@@ -157,6 +177,7 @@ def one_instrument_api(instrument_id):
 
 
 @bp.route('/myinstruments/')
+@rate_limit
 def my_instruments_api():
     user_instruments = [
         instrument.serialize()
