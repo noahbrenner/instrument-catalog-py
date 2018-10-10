@@ -179,6 +179,7 @@ def one_instrument_api(instrument_id):
 @bp.route('/myinstruments/')
 @rate_limit
 def my_instruments_api():
+    """API endpoint for instruments that the authenticated user created."""
     user_instruments = [
         instrument.serialize()
         for instrument in Instrument.query.filter_by(user_id=g.user.id)]
