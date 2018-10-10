@@ -131,12 +131,11 @@ def get_validated_instrument_data(form, existing_instrument=None):
     # Reference variables
     required_columns = {'name', 'category_id', 'description'}
     string_columns = {'name', 'description', 'image'}
-    input_columns = set(key for key, value in instrument.items()
-                        if value or value is not 0)
+    input_columns = set(key for key, value in instrument.items() if value)
 
     # === Begin tests === #
 
-    # Test: All required fields are present and are not blank
+    # Test: All required fields are present (and not blank)
     if not required_columns.issubset(input_columns):
         # PUT requests do not need to specify all fields, only those to update
         if request.method != 'PUT':
