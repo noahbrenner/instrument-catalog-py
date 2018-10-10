@@ -46,7 +46,7 @@ def inject_template_data():
 
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found(error=None):
     return render_template('error.html'), 404
 
 
@@ -69,6 +69,10 @@ def all_categories():
 def one_category(category_id):
     """Display a list of all instruments in a given category."""
     category = Category.query.get(category_id)
+
+    if category is None:
+        return not_found()
+
     return render_template('one_category.html', category=category)
 
 
@@ -85,6 +89,10 @@ def all_instruments():
 def one_instrument(instrument_id):
     """Display information about a given instrument."""
     instrument = Instrument.query.get(instrument_id)
+
+    if instrument is None:
+        return not_found()
+
     return render_template('one_instrument.html', instrument=instrument)
 
 
@@ -121,6 +129,9 @@ def new_instrument():
 def edit_instrument(instrument_id):
     """Display a form for editing an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
+
+    if instrument is None:
+        return not_found()
 
     if request.method == 'GET':
         return render_template('edit_instrument.html',
@@ -169,6 +180,9 @@ def edit_instrument(instrument_id):
 def delete_instrument(instrument_id):
     """Display a form for deleting an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
+
+    if instrument is None:
+        return not_found()
 
     if request.method == 'GET':
         return render_template('delete_instrument.html', instrument=instrument)
