@@ -106,7 +106,7 @@ def new_instrument():
                                 user_id=g.user.id,
                                 image=data['image'] or None)
 
-        if data['alternate_names']:
+        if 'alternate_names' in data:
             instrument.alternate_names.extend(
                 AlternateInstrumentName(name=name, index=index)
                 for index, name in enumerate(data['alternate_names']))
@@ -140,7 +140,7 @@ def edit_instrument(instrument_id):
                 setattr(instrument, key, value)
 
         # Update alternate names unless they haven't been changed at all
-        new_alt_names = data['alternate_names']
+        new_alt_names = data.get('alternate_names', [])
         old_alt_names = [alt.name for alt in instrument.alternate_names]
 
         if not new_alt_names == old_alt_names:
