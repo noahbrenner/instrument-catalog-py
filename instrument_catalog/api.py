@@ -185,3 +185,9 @@ def my_instruments_api():
         for instrument in Instrument.query.filter_by(user_id=g.user.id)]
 
     return api_jsonify(user_instruments)
+
+
+@bp.route('/<path:unused>')
+def api_not_found(unused):
+    """Handle requests to invalid API endpoint paths."""
+    return api_jsonify({}, ['Unknown API endpoint.']), 404
