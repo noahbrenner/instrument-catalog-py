@@ -195,7 +195,7 @@ def login():
         return render_template('login.html')
     elif request.method == 'POST':
         if app.config['ENV'] == 'development':
-            g.user = User.query.get(1)
+            g.user = User.query.order_by(User.id).first()
         return redirect(url_for('index'))
 
 
