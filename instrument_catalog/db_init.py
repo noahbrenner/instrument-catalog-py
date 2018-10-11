@@ -8,10 +8,11 @@ check to verify whether the database or these predefined rows already
 exist, so such a check should be performed before running this code.
 """
 from textwrap import dedent
+import flask
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 
 
-def init(in_prod_environment=True):
+def init():
     """Initialize rows in the database.
 
     The IDs for each row are hard-coded so that other rows created here can
@@ -26,7 +27,7 @@ def init(in_prod_environment=True):
     user1 = User(name='Admin1', email='fake@example.com')
     db.session.add(user1)
 
-    if in_prod_environment:
+    if flask.current_app.env == 'production':
         print('Initiating database rows in PRODUCTION environment')
         # Associate all generated rows with the same admin user
         user2 = user1
