@@ -66,7 +66,7 @@ def init(in_prod_environment=True):
     lever_harp = Instrument(
         name='Lever Harp', image='leverharp.jpg',
         category=strings, user=user2, description=dedent("""\
-            It’s another type of harp!"""))
+            It's another type of harp!"""))
 
     flute = Instrument(
         name='Flute', image='flute.jpg',

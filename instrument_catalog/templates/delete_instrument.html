@@ -4,7 +4,7 @@
 {% block content %}
   <form action="{{ url_for('delete_instrument', instrument_id=instrument.id) }}" method="POST">
     <p>Are you sure you want to permanently delete <a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a> from the catalog?</p>
-    <p>It will not be possible to recover this instrument’s data once it has been deleted, though it <em>will</em> be possible to create a new instrument with the same name. If you simply want to change some of this instrument’s information, you can <a href="{{ url_for('edit_instrument', instrument_id=instrument.id) }}">edit the instrument</a>.
+    <p>It will not be possible to recover this instrument's data once it has been deleted, though it <em>will</em> be possible to create a new instrument with the same name. If you simply want to change some of its information, you can <a href="{{ url_for('edit_instrument', instrument_id=instrument.id) }}">edit the instrument</a>.
 
     <fieldset>
       <legend>Delete {{ instrument.name }}</legend>

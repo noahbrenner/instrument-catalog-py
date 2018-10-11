@@ -4,7 +4,7 @@
 {% block heading_container %}
   {{ super() }}
   {% if logged_in %}
-    <p class="notice">You’re already logged in! However, you can explicitly log in again, if you’d like. You can also choose a different third-party account to use.</p>
+    <p class="notice">You're already logged in! However, you can explicitly log in again, if you'd like. You can also choose a different third-party account to use.</p>
   {% endif %}
 {% endblock heading_container %}
 {% block content %}
@@ -12,5 +12,5 @@
     <button type="submit">Sign In with Google</button>
     <button type="submit">Sign In with GitHub</button>
   </form>
-  <p>Once you’ve signed in, you’ll be able to create your own instrument pages! You’ll be able to edit any that you’ve created and you’ll have access to your very own page showing all the instruments you’ve contributed to the catalog.</p>
+  <p>Once you've signed in, you'll be able to create your own instrument pages! You'll be able to edit any that you've created and you'll have access to your very own page showing all the instruments you've contributed to the catalog.</p>
 {% endblock content %}
