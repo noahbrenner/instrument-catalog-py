@@ -25,12 +25,15 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
+    # NOTE We're commenting out 'email' column for compatibility with sqlite3
+    # which does not support removing columns from existing tables. The 'email'
+    # column is removed in a later revision.
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=False),
-    sa.Column('email', sa.String(length=128), nullable=False),
+    # sa.Column('email', sa.String(length=128), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    # sa.UniqueConstraint('email')
     )
     op.create_table('instrument',
     sa.Column('id', sa.Integer(), nullable=False),

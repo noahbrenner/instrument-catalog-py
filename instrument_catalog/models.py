@@ -5,9 +5,15 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('oauth_provider', 'provider_user_id',
+                            name='unique_oauth_id'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    email = db.Column(db.String(128), unique=True, nullable=False)
+    oauth_provider = db.Column(db.String(128))
+    provider_user_id = db.Column(db.String)
 
 
 class Category(db.Model):

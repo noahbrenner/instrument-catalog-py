@@ -24,7 +24,7 @@ def init():
     """
     # === Create users ===
 
-    user1 = User(name='Admin1', email='fake@example.com')
+    user1 = User(name='Admin1')
     db.session.add(user1)
 
     if flask.current_app.env == 'production':
@@ -34,7 +34,7 @@ def init():
     else:
         print('Initiating database rows in DEVELOPMENT environment')
         # Create an additional user to help with testing permissions
-        user2 = User(name='Admin2', email='madeup@example.com')
+        user2 = User(name='Admin2')
         db.session.add(user2)
 
     # === Create categories ===
