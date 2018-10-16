@@ -14,6 +14,7 @@ class User(db.Model):
     name = db.Column(db.String(128), nullable=False)
     oauth_provider = db.Column(db.String(128))
     provider_user_id = db.Column(db.String)
+    access_token = db.Column(db.String)
 
 
 class Category(db.Model):
