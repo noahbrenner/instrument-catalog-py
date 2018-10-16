@@ -80,7 +80,7 @@ def logout():
     # Remove user ID from the session
     session.pop('user', None)
 
-    # Remove the user's access token from our database
+    # Remove the user's OAuth access token from our database
     g.user.access_token = None
     db.session.add(g.user)
     db.session.commit()
