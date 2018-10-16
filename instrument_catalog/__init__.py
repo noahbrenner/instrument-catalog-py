@@ -23,7 +23,9 @@ app.config.update(
     SQLALCHEMY_DATABASE_URI=os.environ.get(
         'DATABASE_URL',
         'sqlite:///' + os.path.join(basedir, 'app.db')),
-    SQLALCHEMY_TRACK_MODIFICATIONS=False
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    GOOGLE_OAUTH_CLIENT_ID=os.environ.get('GOOGLE_CLIENT_ID'),
+    GOOGLE_OAUTH_CLIENT_SECRET=os.environ.get('GOOGLE_CLIENT_SECRET')
 )
 
 db.init_app(app)

@@ -4,17 +4,20 @@ instrument_catalog.server
 
 Defines server routes, including main application logic.
 """
-from flask import (
-    Flask, Markup, flash, render_template, request, redirect, url_for)
+from flask import (Flask, Markup, flash, g, render_template, request, redirect,
+                   session, url_for)
 import bleach
 import mistune
 from . import api
+from . import auth
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 from .validation import get_validated_instrument_data
 
 
 app = Flask(__name__)
 app.register_blueprint(api.bp, url_prefix='/api')
+app.register_blueprint(auth.bp, url_prefix='')
+app.register_blueprint(auth.google_bp, url_prefix='/auth')
 
 markdown = mistune.Markdown(escape=True)  # Users can't enter raw HTML
 
@@ -27,22 +30,22 @@ bleach_args = dict(
 )
 
 
-# Hacky stub for global object
-class g:
-    pass
-
-
 @app.template_filter('markdown')
 def markdown_filter(data, inline=False):
     return Markup(bleach.clean(markdown(data), **bleach_args))
+
+
+@app.before_request
+def get_user():
+    if 'user' in session:
+        g.user = User.query.get(session['user'])
 
 
 @app.context_processor
 def inject_template_data():
     """Provide category data used by base template for every request."""
     return dict(categories=Category.query.order_by(Category.id).all(),
-                logged_in=hasattr(g, 'user'),
-                g=g)
+                logged_in=hasattr(g, 'user'))
 
 
 @app.errorhandler(404)
@@ -200,22 +203,3 @@ def my_instruments():
     instruments = Instrument.query\
         .filter_by(user_id=g.user.id).order_by(Instrument.name).all()
     return render_template('my_instruments.html', instruments=instruments)
-
-
-@app.route('/login', methods=('GET', 'POST'))
-def login():
-    """Display the login page."""
-    if request.method == 'GET':
-        return render_template('login.html')
-    elif request.method == 'POST':
-        if app.config['ENV'] == 'development':
-            g.user = User.query.order_by(User.id).first()
-        return redirect(url_for('index'))
-
-
-@app.route('/logout')
-def logout():
-    """Log the user out and redirect to the home page."""
-    if hasattr(g, 'user'):
-        del g.user
-    return redirect(url_for('index'))
