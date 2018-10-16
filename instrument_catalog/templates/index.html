@@ -8,7 +8,7 @@
       <a href="{{ url_for('new_instrument') }}">Create New Instrument</a>
     </section>
   {% endif %}
-  <p>Welcome to the Instrument Catalog! Here you can find quick information about many types of instruments. You can even add your own instruments to this resource if you have an account (<a href="{{ url_for('login') }}">create one here</a> if you haven't yet). Once you're logged in, you access your very own "My Instruments" page, showing all of the instruments you've contributed to the catalog!</p>
+  <p>Welcome to the Instrument Catalog! Here you can find quick information about many types of instruments. You can even add your own instruments to this resource if you have an account (<a href="{{ url_for('auth.login') }}">create one here</a> if you haven't yet). Once you're logged in, you access your very own "My Instruments" page, showing all of the instruments you've contributed to the catalog!</p>
 
   <h2>Explore</h2>
   <ul>
