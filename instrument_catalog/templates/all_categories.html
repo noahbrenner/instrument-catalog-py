@@ -5,7 +5,7 @@
   {% for category in categories %}
     <article>
       <h2><a href="{{ url_for('one_category', category_id=category.id) }}">{{ category.name }}</a></h2>
-      {% if logged_in %}
+      {% if 'user' in g %}
         <a href="{{ url_for('new_instrument', c=category.id) }}">Create an instrument in this category</a>
       {% endif %}
       {{ category.description | markdown }}

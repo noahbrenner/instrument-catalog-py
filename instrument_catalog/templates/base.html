@@ -13,10 +13,12 @@
       <div>
         <h1>Instrument Catalog</h1>
         <a href="#">Menu</a>
-        {% if logged_in %}
-          <a href="{{ url_for('logout') }}">Log out</a>
+        {% if 'user' in g %}
+          <form action="{{ url_for('auth.logout') }}" method="POST">
+            <button type="submit">Log out</button>
+          </form>
         {% else %}
-          <a href="{{ url_for('login') }}">Log in</a>
+          <a href="{{ url_for('auth.login') }}">Log in</a>
         {% endif %}
       </div>
 
@@ -24,7 +26,7 @@
         <h2 class="nav-heading">Menu</h2>
         <ul>
           <li class="nav-home"><a href="{{ url_for('index') }}">Home</a></li>
-          {% if logged_in %}
+          {% if 'user' in g %}
             <li><a href="{{ url_for('my_instruments') }}">My Instruments</a></li>
             <li><a href="{{ url_for('new_instrument') }}">Create New Instrument</a></li>
           {% endif %}

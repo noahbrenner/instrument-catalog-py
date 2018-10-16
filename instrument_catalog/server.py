@@ -44,8 +44,7 @@ def get_user():
 @app.context_processor
 def inject_template_data():
     """Provide category data used by base template for every request."""
-    return dict(categories=Category.query.order_by(Category.id).all(),
-                logged_in=hasattr(g, 'user'))
+    return dict(categories=Category.query.order_by(Category.id).all())
 
 
 @app.errorhandler(404)

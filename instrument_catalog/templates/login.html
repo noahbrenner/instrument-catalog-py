@@ -3,7 +3,7 @@
 {% block heading %}Log in to Instrument Catalog{% endblock %}
 {% block heading_container %}
   {{ super() }}
-  {% if logged_in %}
+  {% if 'user' in g %}
     <p class="notice">You're already logged in! However, you can explicitly log in again, if you'd like.</p>
   {% endif %}
 {% endblock heading_container %}
