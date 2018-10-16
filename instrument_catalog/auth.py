@@ -4,7 +4,7 @@ instrument_catalog.auth
 
 Defines routes for logging in and out using OAuth.
 """
-from flask import (Blueprint, abort, current_app, flash, redirect,
+from flask import (Blueprint, Markup, abort, current_app, flash, g, redirect,
                    render_template, request, session, url_for)
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.contrib.google import make_google_blueprint, google
@@ -41,8 +41,9 @@ def login_completed(blueprint, token):
                         oauth_provider=blueprint.name,
                         provider_user_id=user_data.get('id'))
 
-            db.session.add(user)
-            db.session.commit()
+        user.access_token = token.get('access_token')
+        db.session.add(user)
+        db.session.commit()
 
     session['user'] = user.id
     flash('Successfully logged in with {oauth_provider}!'
@@ -67,9 +68,31 @@ def login():
             return abort(501)  # Not Implemented
 
 
-@bp.route('/logout')
+@bp.route('/logout', methods=('POST',))
 def logout():
     """Log the user out and redirect to the home page."""
-    if hasattr(g, 'user'):
-        del g.user
+    # Revoke our access to the user's Google account
+    oauth_logout = google.post(
+        'https://accounts.google.com/o/oauth2/revoke',
+        params={'token': g.user.access_token},
+        headers={'Content-Type': 'application/x-www-form-urlencoded'})
+
+    # Remove user ID from the session
+    session.pop('user', None)
+
+    # Remove the user's access token from our database
+    g.user.access_token = None
+    db.session.add(g.user)
+    db.session.commit()
+
+    if oauth_logout.ok:
+        flash('You have successfully logged out!')
+    else:
+        flash(Markup(  # Use Markup() so that the link is rendered correctly
+            'You are successfully logged out of Instrument Catalog, but we may'
+            ' not have been able to revoke our access to your Google account.'
+            ' You can manually revoke our access yourself at'
+            ' <a href="https://myaccount.google.com/permissions">'
+            'https://myaccount.google.com/permissions</a>.'))
+
     return redirect(url_for('index'))
