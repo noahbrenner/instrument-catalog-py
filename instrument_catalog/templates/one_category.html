@@ -8,7 +8,7 @@
   <hr>
   {% if category.instruments %}
     {% for instrument in category.instruments %}
-      {{ tile(instrument, heading='h2') }}
+      {{ tile(instrument, current_user, heading='h2') }}
     {% endfor %}
   {% else %}
     <p>There are no instruments in this category yet, but you can <a href="{{ url_for('new_instrument', c=category.id) }}">create one</a>!</p>

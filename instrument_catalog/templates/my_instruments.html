@@ -11,7 +11,7 @@
       <a href="{{ url_for('new_instrument', c=category.id) }}">Create an instrument in this category</a>
       {% for instrument in instruments %}
         {% if instrument.category_id == category.id %}
-          {{ tile(instrument, heading='h3') }}
+          {{ tile(instrument, current_user, heading='h3') }}
         {% endif %}
       {% endfor %}
     </section>

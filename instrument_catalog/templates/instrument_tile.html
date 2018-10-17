@@ -1,4 +1,4 @@
-{% macro tile(instrument, heading='h2') -%}
+{% macro tile(instrument, current_user, heading='h2') -%}
   <article>
     <{{ heading }}><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a></{{ heading }}>
     {% if current_user.is_authenticated and current_user.id == instrument.user_id %}
