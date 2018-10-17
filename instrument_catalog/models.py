@@ -16,6 +16,16 @@ class User(db.Model):
     provider_user_id = db.Column(db.String)
     access_token = db.Column(db.String)
 
+    # Properties and methods used by flask-login
+
+    is_authenticated = True  # flask-login only sees this after authentication
+    is_active = True  # We have not yet implemented deactivation of accounts
+    is_anonymous = False
+
+    def get_id(self):
+        """Return a unicode representation of the user ID."""
+        return str(self.id)
+
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)

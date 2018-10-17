@@ -4,8 +4,9 @@ instrument_catalog.server
 
 Defines server routes, including main application logic.
 """
-from flask import (Flask, Markup, flash, g, render_template, request, redirect,
+from flask import (Flask, Markup, flash, render_template, request, redirect,
                    session, url_for)
+from flask_login import current_user, login_required
 import bleach
 import mistune
 from . import api
@@ -33,12 +34,6 @@ bleach_args = dict(
 @app.template_filter('markdown')
 def markdown_filter(data, inline=False):
     return Markup(bleach.clean(markdown(data), **bleach_args))
-
-
-@app.before_request
-def get_user():
-    if 'user' in session:
-        g.user = User.query.get(session['user'])
 
 
 @app.context_processor
@@ -99,6 +94,7 @@ def one_instrument(instrument_id):
 
 
 @app.route('/instruments/new', methods=['GET', 'POST'])
+@login_required
 def new_instrument():
     """Display a form for creating a new instrument."""
     if request.method == 'GET':
@@ -113,7 +109,7 @@ def new_instrument():
         instrument = Instrument(name=data['name'],
                                 description=data['description'],
                                 category_id=data['category_id'],
-                                user_id=g.user.id,
+                                user_id=current_user.id,
                                 image=data['image'] or None)
 
         if 'alternate_names' in data:
@@ -128,6 +124,7 @@ def new_instrument():
 
 
 @app.route('/instruments/<int:instrument_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_instrument(instrument_id):
     """Display a form for editing an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
@@ -179,6 +176,7 @@ def edit_instrument(instrument_id):
 
 
 @app.route('/instruments/<int:instrument_id>/delete', methods=['GET', 'POST'])
+@login_required
 def delete_instrument(instrument_id):
     """Display a form for deleting an existing instrument."""
     instrument = Instrument.query.get(instrument_id)
@@ -197,8 +195,9 @@ def delete_instrument(instrument_id):
 
 
 @app.route('/my/')
+@login_required
 def my_instruments():
     """Display all instruments that the logged in user has created."""
     instruments = Instrument.query\
-        .filter_by(user_id=g.user.id).order_by(Instrument.name).all()
+        .filter_by(user_id=current_user.id).order_by(Instrument.name).all()
     return render_template('my_instruments.html', instruments=instruments)

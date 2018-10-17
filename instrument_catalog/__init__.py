@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from .server import app
 from .models import db, Category
 from .api import rate_limiter
+from .auth import login_manager
 
 
 __all__ = ['app']
@@ -31,6 +32,7 @@ app.config.update(
 db.init_app(app)
 Migrate(app, db)
 rate_limiter.init_app(app)
+login_manager.init_app(app)
 
 
 # Initialize rows in the database if they don't exist yet

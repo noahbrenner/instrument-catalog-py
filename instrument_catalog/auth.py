@@ -4,20 +4,49 @@ instrument_catalog.auth
 
 Defines routes for logging in and out using OAuth.
 """
-from flask import (Blueprint, Markup, abort, current_app, flash, g, redirect,
+from flask import (Blueprint, Markup, abort, current_app, flash, redirect,
                    render_template, request, session, url_for)
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.contrib.google import make_google_blueprint, google
+from flask_login import (LoginManager, current_user, login_required,
+                         login_user, logout_user)
 from .models import db, User
 
 
 bp = Blueprint('auth', __name__)
 
-
 google_bp = make_google_blueprint(
     scope='https://www.googleapis.com/auth/userinfo.profile'
 )
 
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.login_message = 'You need to log in to access that page.'
+login_manager.refresh_view
+login_manager.session_protection = 'strong'
+
+
+# flask-login functions
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Return a user object (or None) from a Unicode user ID."""
+    return User.query.get(int(user_id))
+
+
+@login_manager.unauthorized_handler
+def require_login():
+    """Handle unauthorized page requests.
+
+    This function overrides flask-login's default behavior in order to
+    avoid including a `next` query string parameter, since we haven't
+    yet implemented safe validation of redirect URLs.
+    """
+    flash(login_manager.login_message)
+    return redirect(url_for('auth.login'))
+
+
+# flask-dance functions
 
 @oauth_error.connect
 def login_failed(*args, **kwargs):
@@ -45,12 +74,15 @@ def login_completed(blueprint, token):
         db.session.add(user)
         db.session.commit()
 
-    session['user'] = user.id
+    remember = current_app.env != 'development'  # Only use a cookie in prod
+    login_user(user, remember=remember)
     flash('Successfully logged in with {oauth_provider}!'
           .format(oauth_provider=user.oauth_provider.capitalize()))
 
     return redirect(url_for('my_instruments'))
 
+
+# Routes
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -69,21 +101,22 @@ def login():
 
 
 @bp.route('/logout', methods=['POST'])
+@login_required
 def logout():
     """Log the user out and redirect to the home page."""
     # Revoke our access to the user's Google account
     oauth_logout = google.post(
         'https://accounts.google.com/o/oauth2/revoke',
-        params={'token': g.user.access_token},
+        params={'token': current_user.access_token},
         headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
-    # Remove user ID from the session
-    session.pop('user', None)
-
     # Remove the user's OAuth access token from our database
-    g.user.access_token = None
-    db.session.add(g.user)
+    current_user.access_token = None
+    db.session.add(current_user)
     db.session.commit()
+
+    # Log out the user in our server environment
+    logout_user()
 
     if oauth_logout.ok:
         flash('You have successfully logged out!')

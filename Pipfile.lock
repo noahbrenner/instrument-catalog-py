@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0598d4e3368dfb59bb85a2011e92b668c1f9f0518e94fa69f78d6610eee05a91"
+            "sha256": "b4f4477330e119609ee7ecf5db787523eb1fa18252a67e82188b096026db45fd"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -38,10 +38,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:376690d6f16d32f9d1fe8932551d80b23e9d393a8578c5633a2ed39a64861638",
-                "sha256:456048c7e371c089d0a77a5212fb37a2c2dce1e24146e3b7e0261736aaeaa22a"
+                "sha256:339dc09518b07e2fa7eda5450740925974815557727d6bd35d319c1524a04a4c",
+                "sha256:6d58c986d22b038c8c0df30d639f23a3e6d172a05c3583e766f4c0b785c0986a"
             ],
-            "version": "==2018.8.24"
+            "version": "==2018.10.15"
         },
         "chardet": {
             "hashes": [
@@ -80,6 +80,13 @@
             ],
             "index": "pypi",
             "version": "==1.0.1"
+        },
+        "flask-login": {
+            "hashes": [
+                "sha256:c815c1ac7b3e35e2081685e389a665f2c74d7e077cb93cecabaea352da4752ec"
+            ],
+            "index": "pypi",
+            "version": "==0.4.1"
         },
         "flask-migrate": {
             "hashes": [

@@ -3,7 +3,7 @@
 {% block heading_container %}{% endblock %}{# We're overriding heading settings #}
 {% block content %}
   <h2 class="inst_detail-heading">{{ instrument.name }}</h2>
-  {% if 'user' in g and g.user.id == instrument.user_id %}
+  {% if current_user.is_authenticated and current_user.id == instrument.user_id %}
     <ul class="instrument-options">
       <li><a href="{{ url_for('edit_instrument', instrument_id=instrument.id) }}">Edit</a></li>
       <li><a href="{{ url_for('delete_instrument', instrument_id=instrument.id) }}">Delete</a></li>

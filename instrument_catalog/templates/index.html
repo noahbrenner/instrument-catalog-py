@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block heading_container %}{% endblock %}{# No heading at the top of this page #}
 {% block content %}
-  {% if 'user' in g %}
+  {% if current_user.is_authenticated %}
     <section class="intro-links">
       <a href="{{ url_for('my_instruments') }}">My Instruments</a>
       <a href="{{ url_for('new_instrument') }}">Create New Instrument</a>
