@@ -52,7 +52,7 @@ def login_completed(blueprint, token):
     return redirect(url_for('my_instruments'))
 
 
-@bp.route('/login', methods=('GET', 'POST'))
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
     """Display the login page."""
     if request.method == 'GET':
@@ -68,7 +68,7 @@ def login():
             return abort(501)  # Not Implemented
 
 
-@bp.route('/logout', methods=('POST',))
+@bp.route('/logout', methods=['POST'])
 def logout():
     """Log the user out and redirect to the home page."""
     # Revoke our access to the user's Google account

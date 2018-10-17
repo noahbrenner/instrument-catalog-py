@@ -71,7 +71,7 @@ def one_category_instruments_api(category_id):
     return api_jsonify(category_instruments)
 
 
-@bp.route('/instruments/', methods=('GET', 'POST'))
+@bp.route('/instruments/', methods=['GET', 'POST'])
 @rate_limit
 def instruments_api():
     """API endpoint for creating or listing instruments."""
@@ -105,7 +105,7 @@ def instruments_api():
 
 
 @bp.route('/instruments/<int:instrument_id>/',
-          methods=('GET', 'PUT', 'DELETE'))
+          methods=['GET', 'PUT', 'DELETE'])
 @rate_limit
 def one_instrument_api(instrument_id):
     instrument = Instrument.query.get(instrument_id)
