@@ -4,17 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-sqlalchemy = "*"
-flask-migrate = "*"
-flask-limiter = "*"
-python-dotenv = "*"
-gunicorn = "*"
-requests = "*"
-mistune = "*"
 bleach = "*"
-flask-dance = "*"
 blinker = "*"
+flask = "*"
+flask-dance = "*"
+flask-limiter = "*"
+flask-migrate = "*"
+flask-sqlalchemy = "*"
+gunicorn = "*"
+mistune = "*"
+python-dotenv = "*"
+requests = "*"
 
 [requires]
 
