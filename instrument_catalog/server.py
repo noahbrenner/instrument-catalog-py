@@ -131,6 +131,9 @@ def edit_instrument(instrument_id):
 
     if instrument is None:
         return not_found()
+    elif instrument.user_id != current_user.id:
+        flash('You can only edit instrument pages that you have created.')
+        return redirect(url_for('one_instrument', instrument_id=instrument_id))
 
     if request.method == 'GET':
         return render_template('edit_instrument.html',
@@ -183,6 +186,9 @@ def delete_instrument(instrument_id):
 
     if instrument is None:
         return not_found()
+    elif instrument.user_id != current_user.id:
+        flash('You can only delete instrument pages that you have created.')
+        return redirect(url_for('one_instrument', instrument_id=instrument_id))
 
     if request.method == 'GET':
         return render_template('delete_instrument.html', instrument=instrument)
