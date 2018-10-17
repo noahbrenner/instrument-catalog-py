@@ -93,7 +93,8 @@ def login():
     elif request.method == 'POST':
         if current_app.env == 'development':
             # Log in as the first user in the database (only for development)
-            session['user'] = User.query.order_by(User.id).first().id
+            login_user(User.query.order_by(User.id).first())
+            flash('Successfully logged in as dev mode user.')
             return redirect(url_for('index'))
         else:
             # This route only accepts POST requests while in development
