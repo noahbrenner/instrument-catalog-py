@@ -4,8 +4,9 @@ instrument_catalog.api
 
 Defines routes for JSON API.
 """
-from flask import Blueprint, g, get_flashed_messages, jsonify, request, url_for
+from flask import Blueprint, get_flashed_messages, jsonify, request, url_for
 from flask_limiter import Limiter
+from flask_login import current_user, login_required
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 from .validation import get_validated_instrument_data
 
@@ -15,20 +16,9 @@ bp = Blueprint('api', __name__)
 # TODO If app scales, we'll want to use `moving-window` and redis
 rate_limiter = Limiter(strategy='fixed-window',
                        storage_uri='memory://',
-                       key_func=lambda: g.user.id)
+                       key_func=lambda: current_user.id)
 
 rate_limit = rate_limiter.shared_limit('50/minute;2/second', scope='api')
-
-
-# Temporary stub for testing authentication
-@bp.before_request
-def auth_stub():
-    try:
-        user_id = int(request.query_string)
-    except ValueError:
-        pass
-    else:
-        g.user = User.query.get(user_id)
 
 
 def api_jsonify(data, errors=None):
@@ -37,12 +27,41 @@ def api_jsonify(data, errors=None):
     return jsonify(successful=not errors, errors=errors, data=data)
 
 
+# Event handlers
+
+@bp.before_request
+def require_authentication():
+    """Return an error for any unauthenticated API request."""
+    # Instead of adding a `@login_required` decorator to every API route, we're
+    # directly verifying every request that is processed by this blueprint.
+    # Because of the wildcard `api_not_found` route, any request starting with
+    # the URL prefix (or subdomain) associated with this blueprint will cause
+    # this `before_request` handler to be called. Benefits of this approach:
+    #
+    #  - All possible endpoints are handled at once, including non-existent
+    #    or misspelled ones.
+    #  - A session cookie is not sent for any intended API request.
+    if not current_user.is_authenticated:
+        api_key_url = '{host}{path}'.format(
+            host=request.host_url[:-1],  # Remove the trailing slash
+            path=url_for('my_instruments'))
+
+        errors = ['You must authenticate using the `Authorization: Bearer`'
+                  ' header in order to make API calls. Find your API key by'
+                  ' visiting this URL in your browser: {url}'
+                  .format(url=api_key_url)]
+
+        return api_jsonify({}, errors), 403  # Forbidden
+
+
 @bp.errorhandler(429)
 def rate_limit_handler(error):
     """Return JSON response for requests over the rate limit."""
     errors = ['Rate limit exceeded: {}'.format(error.description)]
     return api_jsonify({}, errors), 429
 
+
+# Routes
 
 @bp.route('/categories/')
 @rate_limit
@@ -89,7 +108,7 @@ def instruments_api():
             alternate_names = instrument_data.pop('alternate_names')
 
             # Create the requested database entry
-            instrument = Instrument(user_id=g.user.id, **instrument_data)
+            instrument = Instrument(user_id=current_user.id, **instrument_data)
 
             instrument.alternate_names.extend(
                 AlternateInstrumentName(name=name, index=index)
@@ -120,7 +139,7 @@ def one_instrument_api(instrument_id):
 
     elif request.method == 'PUT':
         # Only the user who created `instrument` can modify it
-        if instrument.user_id != g.user.id:
+        if instrument.user_id != current_user.id:
             errors = ['You must authenticate as the user who created'
                       ' this instrument in order to modify it.']
             return api_jsonify({}, errors), 403  # Forbidden
@@ -163,7 +182,7 @@ def one_instrument_api(instrument_id):
         # DELETE requests are idempotent, so we return a successful response
         # even if `instrument_id` is not in the database.
         if instrument is not None:
-            if instrument.user_id == g.user.id:
+            if instrument.user_id == current_user.id:
                 db.session.delete(instrument)
                 db.session.commit()
             else:
@@ -182,11 +201,12 @@ def my_instruments_api():
     """API endpoint for instruments that the authenticated user created."""
     user_instruments = [
         instrument.serialize()
-        for instrument in Instrument.query.filter_by(user_id=g.user.id)]
+        for instrument in Instrument.query.filter_by(user_id=current_user.id)]
 
     return api_jsonify(user_instruments)
 
 
+# NOTE This route must be the last one defined so it doesn't override others
 @bp.route('/<path:unused>')
 def api_not_found(unused):
     """Handle requests to invalid API endpoint paths."""

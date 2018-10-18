@@ -29,9 +29,24 @@ login_manager.session_protection = 'strong'
 # flask-login functions
 
 @login_manager.user_loader
-def load_user(user_id):
+def load_user_from_cookie(user_id):
     """Return a user object (or None) from a Unicode user ID."""
     return User.query.get(int(user_id))
+
+
+@login_manager.request_loader
+def load_user_from_header(request):
+    """Return a user object (or None) from an API key."""
+    auth_header = request.headers.get('Authorization')
+
+    if auth_header and auth_header.startswith('Bearer '):
+        api_key = auth_header[len('Bearer '):]
+        user_id = User.verify_api_key(api_key)
+
+        if user_id is not None:
+            return User.query.get(user_id)
+
+    return None
 
 
 @login_manager.unauthorized_handler

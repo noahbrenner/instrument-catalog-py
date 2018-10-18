@@ -1,7 +1,26 @@
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
+from itsdangerous import URLSafeSerializer, BadData
 
 
 db = SQLAlchemy()
+serializer = None  # Will hold an instance of URLSafeSerializer
+
+
+def get_serializer():
+    """Returns an instance or URLSafeSerializer."""
+    global serializer
+
+    # We need access to our app's secret key to create the serializer, but we
+    # don't have access to `current_app` in global scope (we're not in an app
+    # context), so we'll instantiate the serializer inside this function, which
+    # can be called once we *are* in an app context. We'll cache the serializer
+    # in global scope so that we don't create a new instance on each call.
+    serializer = serializer or URLSafeSerializer(
+            secret_key=current_app.secret_key,
+            signer_kwargs={'key_derivation': 'hmac'})
+
+    return serializer
 
 
 class User(db.Model):
@@ -23,8 +42,28 @@ class User(db.Model):
     is_anonymous = False
 
     def get_id(self):
-        """Return a unicode representation of the user ID."""
+        """Return a Unicode representation of the user ID."""
         return str(self.id)
+
+    # Methods related to API keys
+
+    def get_api_key(self):
+        """Return an API key (a signed user ID)."""
+        # TODO Improve this naive implementation by generating random API keys
+        # and storing them in encrypted form. Also allow for invalidating keys
+        # and generating new ones.
+        serializer = get_serializer()
+        return serializer.dumps(self.id)
+
+    @staticmethod
+    def verify_api_key(api_key):
+        """Return `api_key`'s associated user ID or None."""
+        serializer = get_serializer()
+
+        try:
+            return int(serializer.loads(api_key))
+        except (BadData, ValueError):
+            return None
 
 
 class Category(db.Model):

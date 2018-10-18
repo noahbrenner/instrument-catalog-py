@@ -4,6 +4,7 @@
 {% block heading %}My Instruments{% endblock %}
 {% block content %}
   <a href="{{ url_for('new_instrument') }}">Create a new instrument</a>
+  <p>Your API key: <code>{{ current_user.get_api_key() }}</code></p>
   <hr>
   {% for category in categories %}
     <section>
