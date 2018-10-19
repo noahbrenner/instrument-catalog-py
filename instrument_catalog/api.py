@@ -48,14 +48,10 @@ def require_authentication():
     #    or misspelled ones.
     #  - A session cookie is not sent for any intended API request.
     if not current_user.is_authenticated:
-        api_key_url = '{host}{path}'.format(
-            host=request.host_url[:-1],  # Remove the trailing slash
-            path=url_for('my_instruments'))
-
         errors = ['You must authenticate using the `Authorization: Bearer`'
                   ' header in order to make API calls. Find your API key by'
                   ' visiting this URL in your browser: {url}'
-                  .format(url=api_key_url)]
+                  .format(url=url_for('documentation.api', _external=True))]
 
         return api_jsonify({}, errors), 403  # Forbidden
 
