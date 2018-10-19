@@ -225,6 +225,8 @@ An instrument object, but with the following options and restrictions:
     * `id` (integer)
     * Any other key not named here
 
+Only the specified Instrument Object attributes are updated, others are left unchanged. If there are any errors in the request, no changes are made.
+
 #### Response `data`
 
 A single Instrument Object. Some transformations may be performed on your submitted data, such as removing excess whitespace.
