@@ -17,6 +17,7 @@ from .validation import get_validated_instrument_data
 
 app = Flask(__name__)
 app.register_blueprint(api.bp, url_prefix='/api')
+app.register_blueprint(api.documentation_bp, url_prefix='/apidoc')
 app.register_blueprint(auth.bp, url_prefix='')
 app.register_blueprint(auth.google_bp, url_prefix='/auth')
 

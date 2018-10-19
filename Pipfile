@@ -15,6 +15,7 @@ flask-sqlalchemy = "*"
 gunicorn = "*"
 itsdangerous = "==0.24"
 mistune = "*"
+pygments = "*"
 python-dotenv = "*"
 requests = "*"
 

@@ -4,14 +4,20 @@ instrument_catalog.api
 
 Defines routes for JSON API.
 """
-from flask import Blueprint, get_flashed_messages, jsonify, request, url_for
+from flask import (Blueprint, Markup, get_flashed_messages, jsonify, redirect,
+                   render_template, request, url_for)
 from flask_limiter import Limiter
 from flask_login import current_user, login_required
+import mistune
+import pygments
 from .models import db, User, Category, Instrument, AlternateInstrumentName
 from .validation import get_validated_instrument_data
 
 
 bp = Blueprint('api', __name__)
+
+documentation_bp = Blueprint('documentation', __name__,
+                             template_folder='doc')
 
 # TODO If app scales, we'll want to use `moving-window` and redis
 rate_limiter = Limiter(strategy='fixed-window',
@@ -61,7 +67,35 @@ def rate_limit_handler(error):
     return api_jsonify({}, errors), 429
 
 
+# Custom markdown rendering
+
+class CodeHighlightRenderer(mistune.Renderer):
+    def block_code(self, code, lang):
+        if lang:
+            lexer = pygments.lexers.get_lexer_by_name(lang, stripall=True)
+            formatter = pygments.formatters.html.HtmlFormatter()
+            return pygments.highlight(code, lexer, formatter)
+        else:
+            return '\n<pre><code>{code_block}</code></pre>\n'.format(
+                code_block=mistune.escape(code))
+
+
+markdown = mistune.Markdown(renderer=CodeHighlightRenderer())
+
+
+@documentation_bp.app_template_filter('doc_markdown')
+def doc_markdown_filter(data, inline=False):
+    print('Received call to render markdown.')
+    return Markup(markdown(data))
+
+
 # Routes
+
+@documentation_bp.route('/')
+def api_doc():
+    """Display API documentation webpage."""
+    return render_template('api.html')
+
 
 @bp.route('/categories/')
 @rate_limit
@@ -207,7 +241,11 @@ def my_instruments_api():
 
 
 # NOTE This route must be the last one defined so it doesn't override others
+@bp.route('/', defaults={'unused': ''})
 @bp.route('/<path:unused>')
 def api_not_found(unused):
-    """Handle requests to invalid API endpoint paths."""
+    """Handle requests to otherwise undefined API endpoint paths."""
+    if unused == '':
+        return redirect(url_for('documentation.api_doc'))
+
     return api_jsonify({}, ['Unknown API endpoint.']), 404
