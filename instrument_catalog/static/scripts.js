@@ -94,6 +94,13 @@
             var element = formFields['altName' + index] || addAltNameElement();
             element.value = name
         });
+    } else {
+        // Check whether a category ID was specified in the query string
+        var queryCategory = window.location.search.match(/[?&]c=(\d+)/);
+
+        if (queryCategory && formFields['category' + queryCategory[1]]) {
+            formFields['category' + categorySearch[1]].checked = true;
+        }
     }
 
 
