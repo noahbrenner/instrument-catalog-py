@@ -35,9 +35,12 @@ rate_limiter.init_app(app)
 login_manager.init_app(app)
 
 
-# Initialize rows in the database if they don't exist yet
-# NOTE This is a side effect: The database may change just from importing
-with app.app_context():
-    if len(Category.query.all()) == 0:
-        from . import db_init
-        db_init.init()
+# Unfortunately, this runs *after* the first request, but before we send a
+# response, thus potentially delaying our response to our first visitor.
+@app.before_first_request
+def initialize_database():
+    """Add seed data to the database if it looks like it's empty."""
+    with app.app_context():
+        if len(Category.query.all()) == 0:
+            from . import db_init
+            db_init.init()
