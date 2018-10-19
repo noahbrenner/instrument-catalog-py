@@ -212,14 +212,15 @@ def one_instrument(instrument_id):
         # DELETE requests are idempotent, so we return a successful response
         # even if `instrument_id` is not in the database.
         if instrument is not None:
-            if instrument.user_id == current_user.id:
-                db.session.delete(instrument)
-                db.session.commit()
-            else:
+            # But if the instrument exists, it can only be deleted by its owner
+            if instrument.user_id != current_user.id:
                 errors = ['You must authenticate as the user who created'
                           ' this instrument in order to modify it.']
                 data = {'instrument_id': instrument_id}
                 return api_jsonify(data, errors), 403  # Forbidden
+            else:
+                db.session.delete(instrument)
+                db.session.commit()
 
         data = {'deleted_instrument_id': instrument_id}
         return api_jsonify(data), 200  # OK
