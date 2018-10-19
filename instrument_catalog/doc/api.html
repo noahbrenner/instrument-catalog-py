@@ -3,7 +3,7 @@
 {% block heading %}API Documentation{% endblock %}
 {% block content %}
   {# Get URLs dynamically so that we could mount the `api` blueprint on either a URL prefix or a subdomain and these instructions would still be correct. #}
-  <p>All API endpoints are relative to <code>{{ url_for('api.api_not_found', _external=True)[:-1] }}</code>, so requests to the <code>/categories/</code> endpoint should be made to <code>{{ url_for('api.categories_api', _external=True) }}</code>.
+  <p>All API endpoints are relative to <code>{{ url_for('api.not_found', _external=True)[:-1] }}</code>, so requests to the <code>/categories/</code> endpoint should be made to <code>{{ url_for('api.categories', _external=True) }}</code>.
   {% if current_user.is_authenticated %}
     <p>Your API key: <code>{{ current_user.get_api_key() }}</code></p>
   {% else %}

@@ -40,7 +40,7 @@ def require_authentication():
     """Return an error for any unauthenticated API request."""
     # Instead of adding a `@login_required` decorator to every API route, we're
     # directly verifying every request that is processed by this blueprint.
-    # Because of the wildcard `api_not_found` route, any request starting with
+    # Because of the wildcard 'api.not_found' route, any request starting with
     # the URL prefix (or subdomain) associated with this blueprint will cause
     # this `before_request` handler to be called. Benefits of this approach:
     #
@@ -88,14 +88,14 @@ def doc_markdown_filter(data, inline=False):
 # Routes
 
 @documentation_bp.route('/')
-def api_doc():
+def api():
     """Display API documentation webpage."""
     return render_template('api.html')
 
 
 @bp.route('/categories/')
 @rate_limit
-def categories_api():
+def categories():
     """API endpoint representing all categories."""
     all_categories = [c.serialize() for c in Category.query]
     return api_jsonify(all_categories)
@@ -103,7 +103,7 @@ def categories_api():
 
 @bp.route('/categories/<int:category_id>/')
 @rate_limit
-def one_category_api(category_id):
+def one_category(category_id):
     """API endpoint for a single category."""
     one_category = Category.query.get(category_id).serialize()
     return api_jsonify(one_category)
@@ -111,7 +111,7 @@ def one_category_api(category_id):
 
 @bp.route('/categories/<int:category_id>/instruments/')
 @rate_limit
-def one_category_instruments_api(category_id):
+def one_category_instruments(category_id):
     """API endpoint for instruments in a single category."""
     category_instruments = [
         instrument.serialize()
@@ -122,7 +122,7 @@ def one_category_instruments_api(category_id):
 
 @bp.route('/instruments/', methods=['GET', 'POST'])
 @rate_limit
-def instruments_api():
+def instruments():
     """API endpoint for creating or listing instruments."""
     if request.method == 'GET':
         all_instruments = [i.serialize() for i in Instrument.query]
@@ -156,7 +156,7 @@ def instruments_api():
 @bp.route('/instruments/<int:instrument_id>/',
           methods=['GET', 'PUT', 'DELETE'])
 @rate_limit
-def one_instrument_api(instrument_id):
+def one_instrument(instrument_id):
     instrument = Instrument.query.get(instrument_id)
 
     # We can't return or modify a non-existent instrument, but DELETE is OK
@@ -227,7 +227,7 @@ def one_instrument_api(instrument_id):
 
 @bp.route('/myinstruments/')
 @rate_limit
-def my_instruments_api():
+def my_instruments():
     """API endpoint for instruments that the authenticated user created."""
     user_instruments = [
         instrument.serialize()
@@ -239,9 +239,9 @@ def my_instruments_api():
 # NOTE This route must be the last one defined so it doesn't override others
 @bp.route('/', defaults={'unused': ''})
 @bp.route('/<path:unused>')
-def api_not_found(unused):
+def not_found(unused):
     """Handle requests to otherwise undefined API endpoint paths."""
     if unused == '':
-        return redirect(url_for('documentation.api_doc'))
+        return redirect(url_for('documentation.api'))
 
     return api_jsonify({}, ['Unknown API endpoint.']), 404
