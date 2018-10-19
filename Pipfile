@@ -18,6 +18,7 @@ mistune = "*"
 pygments = "*"
 python-dotenv = "*"
 requests = "*"
+werkzeug = "*"
 
 [requires]
 
