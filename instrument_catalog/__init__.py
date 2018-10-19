@@ -6,6 +6,7 @@ A webserver for displaying and editing a catalog of musical instruments.
 """
 import os
 from flask_migrate import Migrate
+from flask_sslify import SSLify
 from werkzeug.contrib.fixers import ProxyFix
 from .server import app
 from .models import db, Category
@@ -28,12 +29,14 @@ app.config.update(
         'DATABASE_URL',
         'sqlite:///' + os.path.join(basedir, 'app.db')),
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    SSLIFY_PERMANENT=True,
     GOOGLE_OAUTH_CLIENT_ID=os.environ.get('GOOGLE_CLIENT_ID'),
     GOOGLE_OAUTH_CLIENT_SECRET=os.environ.get('GOOGLE_CLIENT_SECRET')
 )
 
 db.init_app(app)
 Migrate(app, db)
+SSLify(app)  # Redirect http -> https, but only in production
 rate_limiter.init_app(app)
 login_manager.init_app(app)
 
