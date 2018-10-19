@@ -1,6 +1,8 @@
 Musical Instrument Catalog Server
 =================================
 
+Check out this app running live: https://instrument-catalog-py.herokuapp.com/
+
 Running the server locally
 --------------------------
 
