@@ -60,7 +60,7 @@ def require_authentication():
 def rate_limit_handler(error):
     """Return JSON response for requests over the rate limit."""
     errors = ['Rate limit exceeded: {}'.format(error.description)]
-    return api_jsonify({}, errors), 429
+    return api_jsonify({}, errors), 429  # Too Many Requests
 
 
 # Custom markdown rendering
@@ -243,6 +243,6 @@ def my_instruments():
 def not_found(unused):
     """Handle requests to otherwise undefined API endpoint paths."""
     if unused == '':
-        return redirect(url_for('documentation.api'))
+        return redirect(url_for('documentation.api')), 301  # Moved Permanently
 
-    return api_jsonify({}, ['Unknown API endpoint.']), 404
+    return api_jsonify({}, ['Unknown API endpoint.']), 404  # Not Found

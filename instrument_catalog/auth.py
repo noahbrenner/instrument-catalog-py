@@ -58,7 +58,7 @@ def require_login():
     yet implemented safe validation of redirect URLs.
     """
     flash(login_manager.login_message)
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.login')), 302  # Found
 
 
 # flask-dance functions
@@ -66,7 +66,7 @@ def require_login():
 @oauth_error.connect
 def login_failed(*args, **kwargs):
     flash('You did not log in. Please try again.')
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.login')), 302  # Found
 
 
 @oauth_authorized.connect
@@ -94,7 +94,7 @@ def login_completed(blueprint, token):
     flash('Successfully logged in with {oauth_provider}!'
           .format(oauth_provider=user.oauth_provider.capitalize()))
 
-    return redirect(url_for('my_instruments'))
+    return redirect(url_for('my_instruments')), 303  # See Other
 
 
 # Routes
@@ -110,7 +110,7 @@ def login():
             # Log in as the first user in the database (only for development)
             login_user(User.query.order_by(User.id).first())
             flash('Successfully logged in as dev mode user.')
-            return redirect(url_for('index'))
+            return redirect(url_for('my_instruments')), 303  # See Other
         else:
             # This route only accepts POST requests while in development
             return abort(501)  # Not Implemented
@@ -144,4 +144,4 @@ def logout():
             ' <a href="https://myaccount.google.com/permissions">'
             'https://myaccount.google.com/permissions</a>.'))
 
-    return redirect(url_for('index'))
+    return redirect(url_for('index')), 303  # See Other

@@ -45,7 +45,7 @@ def inject_template_data():
 
 @app.errorhandler(404)
 def not_found(error=None):
-    return render_template('error.html'), 404
+    return render_template('error.html'), 404  # Not Found
 
 
 @app.route('/')
@@ -105,7 +105,10 @@ def new_instrument():
         data, valid = get_validated_instrument_data(request.form)
 
         if not valid:
-            return render_template('new_instrument.html', instrument=data)
+            return (
+                render_template('new_instrument.html', instrument=data),
+                400  # Bad Request
+            )
 
         instrument = Instrument(name=data['name'],
                                 description=data['description'],
@@ -121,7 +124,10 @@ def new_instrument():
         db.session.add(instrument)
         db.session.commit()
 
-        return redirect(url_for('one_instrument', instrument_id=instrument.id))
+        return (
+            redirect(url_for('one_instrument', instrument_id=instrument.id)),
+            201  # Created
+        )
 
 
 @app.route('/instruments/<int:instrument_id>/edit', methods=['GET', 'POST'])
@@ -134,7 +140,10 @@ def edit_instrument(instrument_id):
         return not_found()
     elif instrument.user_id != current_user.id:
         flash('You can only edit instrument pages that you have created.')
-        return redirect(url_for('one_instrument', instrument_id=instrument_id))
+        return (
+            redirect(url_for('one_instrument', instrument_id=instrument_id)),
+            302  # Found (303 would imply success)
+        )
 
     if request.method == 'GET':
         return render_template('edit_instrument.html',
@@ -146,7 +155,10 @@ def edit_instrument(instrument_id):
         if not valid:
             # Send cleaned-up (but invalid) data instead of either discarding
             # the user's edits or saving invalid data to the database.
-            return render_template('edit_instrument.html', instrument=data)
+            return (
+                render_template('edit_instrument.html', instrument=data),
+                400  # Bad Request
+            )
 
         # Update columns in instrument table
         for key, value in data.items():
@@ -176,7 +188,10 @@ def edit_instrument(instrument_id):
 
         db.session.commit()
 
-        return redirect(url_for('one_instrument', instrument_id=instrument_id))
+        return (
+            redirect(url_for('one_instrument', instrument_id=instrument_id)),
+            200  # OK
+        )
 
 
 @app.route('/instruments/<int:instrument_id>/delete', methods=['GET', 'POST'])
@@ -189,7 +204,10 @@ def delete_instrument(instrument_id):
         return not_found()
     elif instrument.user_id != current_user.id:
         flash('You can only delete instrument pages that you have created.')
-        return redirect(url_for('one_instrument', instrument_id=instrument_id))
+        return (
+            redirect(url_for('one_instrument', instrument_id=instrument_id)),
+            302  # Found (303 would imply success)
+        )
 
     if request.method == 'GET':
         return render_template('delete_instrument.html', instrument=instrument)
@@ -198,7 +216,10 @@ def delete_instrument(instrument_id):
         category_id = instrument.category_id
         db.session.delete(instrument)
         db.session.commit()
-        return redirect(url_for('one_category', category_id=category_id))
+        return (
+            redirect(url_for('one_category', category_id=category_id)),
+            303  # See Other
+        )
 
 
 @app.route('/my/')
