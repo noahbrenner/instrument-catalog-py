@@ -97,7 +97,8 @@ def api():
 @rate_limit
 def categories():
     """API endpoint representing all categories."""
-    all_categories = [c.serialize() for c in Category.query]
+    all_categories = [cat.serialize() for cat in Category.query
+                      .order_by(Category.id)]
     return api_jsonify(all_categories)
 
 
@@ -115,7 +116,8 @@ def one_category_instruments(category_id):
     """API endpoint for instruments in a single category."""
     category_instruments = [
         instrument.serialize()
-        for instrument in Instrument.query.filter_by(category_id=category_id)]
+        for instrument in Category.query.get(category_id).instruments
+    ]
 
     return api_jsonify(category_instruments)
 
@@ -125,7 +127,8 @@ def one_category_instruments(category_id):
 def instruments():
     """API endpoint for creating or listing instruments."""
     if request.method == 'GET':
-        all_instruments = [i.serialize() for i in Instrument.query]
+        all_instruments = [inst.serialize() for inst in Instrument.query
+                           .order_by(Instrument.name)]
         return api_jsonify(all_instruments)
 
     elif request.method == 'POST':
@@ -231,8 +234,9 @@ def one_instrument(instrument_id):
 def my_instruments():
     """API endpoint for instruments that the authenticated user created."""
     user_instruments = [
-        instrument.serialize()
-        for instrument in Instrument.query.filter_by(user_id=current_user.id)]
+        instrument.serialize() for instrument in Instrument.query
+        .filter_by(user_id=current_user.id).order_by(Instrument.name)
+    ]
 
     return api_jsonify(user_instruments)
 
