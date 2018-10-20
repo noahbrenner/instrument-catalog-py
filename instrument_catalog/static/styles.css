@@ -1,0 +1,49 @@
+/*
+ * Base settings
+ */
+
+/* For newer IE versions, since they ignore meta viewport tags in snap mode */
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+
+/* TODO: Uncomment this once the standard is accepted. It doesn't yet validate. */
+/*
+@viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+*/
+
+*, :before, :after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%; /* prevent images from overflowing their containers */
+}
+
+/* 
+ * Header and menu
+ */
+
+/*
+ * Main content
+ */
+
+/*
+ * API documentation
+ */
+
+/*
+ * Breakpoint adjustments
+ */
