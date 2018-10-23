@@ -25,7 +25,12 @@ html,
 body {
   margin: 0;
   padding: 0;
-  line-height: 1.6;
+  font: 16px/1.6 Roboto, sans-serif;
+}
+
+pre,
+code {
+  font-family: 'Roboto Mono', monospace;
 }
 
 img {
