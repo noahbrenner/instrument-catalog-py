@@ -33,8 +33,104 @@ img {
 }
 
 /* 
- * Header and menu
+ * Header
  */
+
+header {
+  padding: 1em;
+}
+
+.header-top {
+  border-bottom: 1px solid #aaa;
+  overflow: auto;
+}
+
+.header-top h1 {
+  float: left;
+}
+
+.menu-toggle {
+  float: right;
+}
+
+.login,
+.logout {
+  float: right;
+  clear: right;
+}
+
+/*
+ * Nav menu
+ */
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: scroll;
+  border: 40px solid rgba(0, 0, 0, 0.5);
+  padding: 2em;
+  background: #fff;
+}
+
+.nav-closed {
+  display: none;
+}
+
+nav h2 {
+  margin: 0 0 1em;
+}
+
+nav .menu-close {
+  position: fixed;
+  /* Offset: nav's border width + 5px */
+  top: 45px;
+  right: 45px;
+}
+
+nav ul {
+  margin: 0;
+  list-style: none;
+}
+
+nav > ul {
+  padding-left: 0;
+}
+
+nav > ul > ul {
+  padding-left: 1.5em;
+}
+
+/* Without JavaScript */
+
+.nojs .menu-toggle {
+  display: none;
+}
+
+.nojs nav {
+  display: block;
+  position: static;
+  border: 1px solid #aaa;
+  padding: 1em;
+  width: auto;
+  height: auto;
+}
+
+.nojs nav h2 {
+  margin: 0 0 0.25em;
+}
+
+.nojs nav ul ul {
+  padding-left: 1em;
+}
+
+/* Put the list of instrument categories all on one line */
+.nojs nav ul ul li {
+  display: inline-block;
+  margin-left: 0.25em;
+}
 
 /*
  * Main content

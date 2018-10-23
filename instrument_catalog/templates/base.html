@@ -7,23 +7,24 @@
     <title>{% block title %}{% endblock %} | Instrument Catalog</title>
     <link rel="stylesheet" href="/static/styles.css">
   </head>
-  <body>
+  <body class="nojs">
 
     <header>
-      <div>
+      <div class="header-top">
         <h1>Instrument Catalog</h1>
-        <a href="#">Menu</a>
+        <a href="#nav" class="menu-toggle">Menu</a>
         {% if current_user.is_authenticated %}
           <form action="{{ url_for('auth.logout') }}" method="POST">
-            <button type="submit">Log out</button>
+            <button type="submit" class="logout">Log out</button>
           </form>
         {% else %}
-          <a href="{{ url_for('auth.login') }}">Log in</a>
+          <a href="{{ url_for('auth.login') }}" class="login">Log in</a>
         {% endif %}
       </div>
 
-      <nav>
+      <nav id="nav" class="nav-closed">
         <h2 class="nav-heading">Menu</h2>
+        <a href="#" class="menu-close menu-toggle">Close menu</a>
         <ul>
           <li class="nav-home"><a href="{{ url_for('index') }}">Home</a></li>
           {% if current_user.is_authenticated %}

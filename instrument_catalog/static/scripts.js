@@ -1,5 +1,23 @@
 'use strict';
 
+// Enable JS-dependent styling
+document.querySelector('.nojs').classList.remove('nojs');
+
+// Show/hide the menu
+(function () {
+    var nav = document.getElementById('nav');
+    var toggles = document.getElementsByClassName('menu-toggle');
+
+    function toggleMenu(event) {
+        nav.classList.toggle('nav-closed');
+        event.preventDefault();
+    }
+
+    Array.prototype.forEach.call(toggles, function (element) {
+        element.addEventListener('click', toggleMenu);
+    });
+})();
+
 // Add "back" functionality when the page has an element with id="back-link"
 // Thanks to https://stackoverflow.com/a/46163215 for inspiration
 (function () {
