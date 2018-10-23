@@ -1,9 +1,6 @@
 'use strict';
 
-// Enable JS-dependent styling
-document.querySelector('.nojs').classList.remove('nojs');
-
-// Show/hide the menu
+// Show/hide the navigation menu
 (function () {
     var nav = document.getElementById('nav');
     var toggles = document.getElementsByClassName('menu-toggle');
@@ -16,7 +13,11 @@ document.querySelector('.nojs').classList.remove('nojs');
     Array.prototype.forEach.call(toggles, function (element) {
         element.addEventListener('click', toggleMenu);
     });
+
+    // Now that the menu can be toggled, disable "no-JS" styling (hide the menu)
+    document.querySelector('.nojs').classList.remove('nojs');
 })();
+
 
 // Add "back" functionality when the page has an element with id="back-link"
 // Thanks to https://stackoverflow.com/a/46163215 for inspiration
