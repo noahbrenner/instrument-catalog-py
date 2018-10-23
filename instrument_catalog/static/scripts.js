@@ -1,4 +1,10 @@
+// Outer wrapper to avoid poluting the global scope
+(function () {
 'use strict';
+
+// Wrapper for all functionality so that we can call it from a listener
+function main() {
+
 
 // Show/hide the navigation menu
 (function () {
@@ -180,3 +186,15 @@
         }
     });
 })();
+
+
+} // End main()
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    // The DOM has already loaded
+    main();
+}
+
+})(); // End outer wrapper
