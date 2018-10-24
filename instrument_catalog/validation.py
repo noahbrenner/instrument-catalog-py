@@ -177,22 +177,21 @@ def get_validated_instrument_data(form, existing_instrument=None):
             is_valid = False
             flash('Alternate names must not duplicate other alternate names.')
 
-    if 'category_id' in instrument:
-        # If the 'category_id' is '', it has already been reported as missing
-        if not instrument['category_id'] == '':
-            try:
-                # Test: Category ID is an integer (NOTE '1.2' becomes 1)
-                instrument['category_id'] = int(instrument['category_id'])
-            except ValueError:
+    if instrument['category_id']:
+        # If the value is '', it has already been reported as missing
+        try:
+            # Test: Category ID is an integer (NOTE '1.2' becomes 1)
+            instrument['category_id'] = int(instrument['category_id'])
+        except ValueError:
+            is_valid = False
+            flash('An invalid category ID was provided.')
+        else:
+            # Test: Category exists in the database
+            if Category.query.get(instrument['category_id']) is None:
                 is_valid = False
                 flash('An invalid category ID was provided.')
-            else:
-                # Test: Category exists in the database
-                if Category.query.get(instrument['category_id']) is None:
-                    is_valid = False
-                    flash('An invalid category ID was provided.')
 
-    if 'image' in instrument:
+    if instrument['image']:
         # Test: Image URL is valid and meets our requirements
         validated_url, image_is_valid = validate_image_url(instrument['image'])
 
