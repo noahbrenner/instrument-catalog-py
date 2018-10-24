@@ -46,22 +46,34 @@ header {
 }
 
 .header-top {
+  display: flex;
+  flex-flow: column wrap;
+  align-content: space-between;
+  height: 80px;
   border-bottom: 1px solid #aaa;
-  overflow: auto;
+}
+
+.header-top > * {
+  flex: 1 0 100%;
+}
+
+.logo-container,
+.logo {
+  width: 80px;
+  height: 80px;
 }
 
 .header-top h1 {
-  float: left;
+  margin: 0;
+  line-height: 1.1;
+  width: 45%;
 }
 
-.menu-toggle {
-  float: right;
-}
-
+.menu-open,
 .login,
 .logout {
-  float: right;
-  clear: right;
+  flex-basis: 50%;
+  line-height: 2em;
 }
 
 /*
@@ -148,3 +160,10 @@ nav > ul > ul {
 /*
  * Breakpoint adjustments
  */
+
+@media screen and (min-width: 500px) {
+  .header-top h1 {
+    width: auto;
+    line-height: 2em;
+  }
+}

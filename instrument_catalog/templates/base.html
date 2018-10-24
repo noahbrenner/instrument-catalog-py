@@ -13,11 +13,12 @@
 
     <header>
       <div class="header-top">
+        <a href="{{ url_for('index') }}"><img class="logo" src="/static/logo.svg" alt="Instrument Catalog logo"></a>
         <h1>Instrument Catalog</h1>
-        <a href="#nav" class="menu-toggle">Menu</a>
+        <a href="#nav" class="menu-open menu-toggle">Menu</a>
         {% if current_user.is_authenticated %}
-          <form action="{{ url_for('auth.logout') }}" method="POST">
-            <button type="submit" class="logout">Log out</button>
+          <form action="{{ url_for('auth.logout') }}" method="POST" class="logout">
+            <button type="submit" class="logout-button">Log out</button>
           </form>
         {% else %}
           <a href="{{ url_for('auth.login') }}" class="login">Log in</a>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logo" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100">
+  <path id="staff" d="
+    M0,10 h100 v1 H0 z
+    m0,20 h100 v1 H0 z
+    m0,20 h100 v1 H0 z
+    m0,20 h100 v1 H0 z
+    m0,20 h100 v1 H0 z"/>
+  <path id="note" d="M 50,27 C 50,13 62,8 67,13 72,18 63,35 52,28 l 0,62 -2,0 z"/>
+</svg>
