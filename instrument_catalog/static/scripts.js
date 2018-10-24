@@ -8,11 +8,10 @@ function main() {
 
 // Show/hide the navigation menu
 (function () {
-    var nav = document.getElementById('nav');
     var toggles = document.getElementsByClassName('menu-toggle');
 
     function toggleMenu(event) {
-        nav.classList.toggle('nav-closed');
+        document.documentElement.classList.toggle('menu-closed');
         event.preventDefault();
     }
 
@@ -21,7 +20,7 @@ function main() {
     });
 
     // Now that the menu can be toggled, disable "no-JS" styling (hide the menu)
-    document.querySelector('.nojs').classList.remove('nojs');
+    document.documentElement.classList.remove('nojs');
 })();
 
 
