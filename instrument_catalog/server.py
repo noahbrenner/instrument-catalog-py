@@ -126,7 +126,7 @@ def new_instrument():
 
         return (
             redirect(url_for('one_instrument', instrument_id=instrument.id)),
-            201  # Created
+            303  # See Other
         )
 
 
@@ -190,7 +190,7 @@ def edit_instrument(instrument_id):
 
         return (
             redirect(url_for('one_instrument', instrument_id=instrument_id)),
-            200  # OK
+            303  # See Other
         )
 
 
