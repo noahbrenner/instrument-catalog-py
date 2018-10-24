@@ -111,6 +111,10 @@ class Instrument(db.Model):
                                       order_by='AlternateInstrumentName.index',
                                       cascade='all, delete-orphan')
 
+    def get_image_url(self):
+        """Return the instrument's image URL or a fallback placeholder."""
+        return self.image or '/static/logo.svg'
+
     def serialize(self):
         return {
             'id': self.id,

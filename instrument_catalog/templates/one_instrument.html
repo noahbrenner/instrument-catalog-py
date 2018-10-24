@@ -9,7 +9,7 @@
       <li><a href="{{ url_for('delete_instrument', instrument_id=instrument.id) }}">Delete</a></li>
     </ul>
   {% endif %}
-  <img src="{{ instrument.image }}" alt="{{ instrument.name }}">
+  <img class="instrument-img" src="{{ instrument.get_image_url() }}" alt="{{ instrument.name }}">
 
   <h3>Category</h3>
   <a href="{{ url_for('one_category', category_id=instrument.category_id) }}">{{ instrument.category.name }}</a>

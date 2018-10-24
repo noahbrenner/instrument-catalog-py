@@ -7,7 +7,7 @@
         <li><a href="{{ url_for('delete_instrument', instrument_id=instrument.id) }}">Delete</a></li>
       </ul>
     {% endif %}
-    <img src="{{ instrument.image }}" alt="{{ instrument.name }}">
+    <img class="instrument-img" src="{{ instrument.get_image_url() }}" alt="{{ instrument.name }}">
     <div class="tile-details">
       {% if instrument.alternate_names %}
         <dl>

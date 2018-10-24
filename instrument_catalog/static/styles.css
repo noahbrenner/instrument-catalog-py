@@ -33,6 +33,15 @@ code {
   font-family: 'Roboto Mono', monospace;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  clear: both;
+}
+
 img {
   max-width: 100%; /* prevent images from overflowing their containers */
 }
@@ -162,6 +171,18 @@ nav > ul > ul {
 /*
  * Main content
  */
+
+.container {
+  margin: 1em;
+}
+
+.instrument-img {
+  float: left;
+  margin: 0 1em 0 0;
+  width: 40vw;
+  max-height: 60vw;
+  background: #ddd;
+}
 
 /*
  * API documentation
