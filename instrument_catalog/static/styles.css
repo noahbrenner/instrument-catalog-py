@@ -126,8 +126,9 @@ body {
 
 }
 
-nav h2 {
-  margin: 0 0 1em;
+.nav-heading {
+  margin: 0 0 0.5em;
+  font-size: 1.7em;
 }
 
 /* `.menu-closer` slides off to the right. It stays in place as `nav` scrolls */
@@ -160,12 +161,30 @@ nav ul {
   list-style: none;
 }
 
-nav > ul {
+.nav-list {
   padding-left: 0;
 }
 
-nav > ul > ul {
+.nav-list > ul {
   padding-left: 1.5em;
+}
+
+.nav-list a,
+.nav-list a:visited {
+  display: inline-block;
+  font-size: 1.2em;
+  line-height: 40px;
+  text-decoration: none;
+  color: #06d;
+}
+
+.nav-list a:active,
+.nav-list a:hover {
+  color: #d11;
+}
+
+.nav-github {
+  margin-top: 1.5em;
 }
 
 /* Without JavaScript */

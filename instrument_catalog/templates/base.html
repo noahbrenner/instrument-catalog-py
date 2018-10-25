@@ -28,7 +28,7 @@
       <nav>
         <h2 class="nav-heading">Menu</h2>
         <a href="#" class="menu-closer menu-toggle"><abbr title="Close menu">X</abbr></a>
-        <ul>
+        <ul class="nav-list">
           <li class="nav-home"><a href="{{ url_for('index') }}">Home</a></li>
           {% if current_user.is_authenticated %}
             <li><a href="{{ url_for('my_instruments') }}">My Instruments</a></li>
