@@ -262,6 +262,33 @@ nav ul {
 }
 
 /*
+ * Flashed messages
+ */
+
+.flashed-messages {
+  margin: 1em 0;
+  padding: 0;
+  list-style: none;
+}
+
+@keyframes fadein {
+  from {
+    background: #fff;
+  }
+  to {
+    background: #ff0;
+  }
+}
+
+.flashed-messages li {
+  margin-top: 1em;
+  border: 1px solid #aaa;
+  text-align: center;
+  font-style: italic;
+  animation: 0.75s ease-in-out 1s 2 alternate fadein;
+}
+
+/*
  * Main content
  */
 
