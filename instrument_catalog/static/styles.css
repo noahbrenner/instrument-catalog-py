@@ -89,6 +89,8 @@ header {
  * Nav menu
  */
 
+/* `nav` slides off to the left. It uses `left` instead of `transform` so that
+ * it doesn't override independent scrolling behavior of `.menu-closer` */
 nav {
   position: fixed;
   top: 0;
@@ -99,30 +101,41 @@ nav {
   border: 40px solid rgba(0, 0, 0, 0.5);
   padding: 2em;
   background: #fff;
+  transition: left 0.25s ease;
 }
 
 .menu-closed nav {
-  display: none;
+  left: -100vw;
 }
 
 body {
   /* Prevent the main page from scrolling while the menu is open */
-  overflow: hidden;
+  position: fixed;
+  /* But always show the scrollbar so the page doesn't jump */
+  overflow-y: scroll;
 }
 
 .menu-closed body {
-  overflow: visible;
+  position: static;
+
 }
 
 nav h2 {
   margin: 0 0 1em;
 }
 
-nav .menu-closer {
+/* `.menu-closer` slides off to the right. It stays in place as `nav` scrolls */
+.menu-closer {
   position: fixed;
   /* Offset: nav's border width + 5px */
   top: 45px;
   right: 45px;
+  transform: translate(0, 0);
+  transition: transform 0.25s ease;
+}
+
+.menu-closed .menu-closer {
+  transform: translate(100vw, 0);
 }
 
 nav ul {
