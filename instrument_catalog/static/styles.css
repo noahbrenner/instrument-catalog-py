@@ -140,6 +140,10 @@ nav > ul > ul {
 
 /* Without JavaScript */
 
+.nojs body {
+  overflow: visible;
+}
+
 .nojs .menu-opener,
 .nojs .menu-closer {
   display: none;
