@@ -15,7 +15,7 @@
       <div class="header-top">
         <a href="{{ url_for('index') }}"><img class="logo" src="/static/logo.svg" alt="Instrument Catalog logo"></a>
         <h1>Instrument Catalog</h1>
-        <a href="#" class="menu-opener menu-toggle">Menu</a>
+        <a href="#" class="menu-opener menu-toggle"><img class="hamburger" src="static/menu-icon.svg" alt="Open menu" title="Open menu"></a>
         {% if current_user.is_authenticated %}
           <form action="{{ url_for('auth.logout') }}" method="POST" class="logout">
             <button type="submit" class="logout-button">Log out</button>
@@ -27,7 +27,7 @@
 
       <nav>
         <h2 class="nav-heading">Menu</h2>
-        <a href="#" class="menu-closer menu-toggle">Close menu</a>
+        <a href="#" class="menu-closer menu-toggle"><abbr title="Close menu">X</abbr></a>
         <ul>
           <li class="nav-home"><a href="{{ url_for('index') }}">Home</a></li>
           {% if current_user.is_authenticated %}
