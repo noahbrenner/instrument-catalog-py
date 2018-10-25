@@ -28,8 +28,10 @@
   <h2>Newly Added Instruments</h2>
   {% for instrument in instruments %}
     <article>
-      <h3><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a></h3>
-      <span>{{ instrument.category.name }}</span>
+      <div class="new-instrument-label">
+        <h3><a href="{{ url_for('one_instrument', instrument_id=instrument.id) }}">{{ instrument.name }}</a></h3>
+        <span>{{ instrument.category.name }}</span>
+      </div>
       <img class="instrument-img" src="{{ instrument.get_image_url() }}" alt="{{ instrument.name }}">
       <p>{{ instrument.description | markdown | striptags | truncate(255) }}</p>
     </article>

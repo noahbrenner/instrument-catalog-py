@@ -3,18 +3,16 @@
 {% block title %}My Instruments{% endblock %}
 {% block heading %}My Instruments{% endblock %}
 {% block content %}
-  <a href="{{ url_for('new_instrument') }}">Create a new instrument</a>
-  <hr>
+  <a class="create-instrument-link" href="{{ url_for('new_instrument') }}">Create a new instrument</a>
   {% for category in categories %}
     <section>
-      <h2>{{ category.name }}</h2>
-      <a href="{{ url_for('new_instrument', c=category.id) }}">Create an instrument in this category</a>
+      <h1>{{ category.name }}</h1>
+      <a class="create-instrument-link" href="{{ url_for('new_instrument', c=category.id) }}">Create an instrument in this category</a>
       {% for instrument in instruments %}
         {% if instrument.category_id == category.id %}
-          {{ tile(instrument, current_user, heading='h3') }}
+          {{ tile(instrument, current_user) }}
         {% endif %}
       {% endfor %}
     </section>
   {% endfor %}
-  <hr>
 {% endblock content %}

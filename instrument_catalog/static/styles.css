@@ -28,6 +28,10 @@ body {
   font: 16px/1.6 Roboto, sans-serif;
 }
 
+article {
+  overflow: auto;
+}
+
 pre,
 code {
   font-family: 'Roboto Mono', monospace;
@@ -40,6 +44,26 @@ h4,
 h5,
 h6 {
   clear: both;
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 1.9em;
+}
+
+h2 {
+  margin: 0.8em 0;
+  font-size: 1.8em;
+}
+
+h3 {
+  margin: 0.8em 0 0;
+  font-size: 1.5em;
+}
+
+p {
+  margin: 1em 0;
 }
 
 img {
@@ -74,8 +98,10 @@ header {
 
 .header-top h1 {
   margin: 0;
-  line-height: 1.4;
   width: 45%;
+  text-align: left;
+  font-size: 2em;
+  line-height: 1.4;
 }
 
 .menu-opener,
@@ -87,8 +113,22 @@ header {
 
 .menu-opener,
 .hamburger {
+  margin-left: auto;
   width: 48px;
   height: 48px;
+}
+
+.login,
+.login:visited {
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: none;
+  color: #06d;
+}
+
+.login:active,
+.login:hover {
+  color: #d11;
 }
 
 /*
@@ -227,6 +267,69 @@ nav ul {
 
 .container {
   margin: 1em;
+}
+
+section h1 {
+  margin: 0.75em auto 0;
+  padding-top: 0.5em;
+  border-top: 1px solid #aaa;
+  width: 90%;
+}
+
+.intro-links a {
+  display: block;
+  height: 40px;
+  text-align: right;
+}
+
+.create-instrument-link {
+  display: block;
+  text-align: center;
+}
+
+.new-instrument-label h3 {
+  display: inline-block;
+  margin: 1.25em 0 0.5em;
+  font-size: 1.5em;
+}
+
+.new-instrument-label > span {
+  display: inline-block;
+  margin-left: 0.75em;
+  border: 1px solid #aaa;
+  border-radius: 7px;
+  padding: 4px 7px;
+  line-height: 1;
+  font-size: 1.1em;
+}
+
+.tile-details dl {
+  margin: 0 0 1em;
+}
+
+.tile-details dt {
+  font-weight: bold;
+}
+
+.tile-details dd:before {
+  content: "» ";
+}
+
+.instrument-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.instrument-options li {
+  display: inline-block;
+  margin-right: 0.5em;
+}
+
+.instrument-options a {
+  display: inline-block;
+  padding: 1em 1em 1em 0;
+  line-height: 1;
 }
 
 .instrument-img {
