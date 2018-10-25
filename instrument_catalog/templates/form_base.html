@@ -5,18 +5,14 @@
 {% endblock heading_container %}
 {% block content %}
   <p>All sections are required unless marked as <span class="optional">(optional)</span>.</p>
-  <form action="{% block form_url %}{% endblock %}" method="POST" autocomplete="off" id="instrumentForm">
+  <form action="{% block form_url %}{% endblock %}" method="POST" autocomplete="off" id="instrumentForm" class="instrument-form">
     <fieldset>
       <legend>Instrument Name</legend>
       <label for="name" class="form-label form-required visuallyhidden">Name:</label>
-      <input type="text" id="name" name="name" autocapitalize="words" size="25" required maxlength="128">
+      <input type="text" id="name" name="name" class="name" placeholder="Musical Saw" autocapitalize="words" size="25" required maxlength="128">
       <p>We recommend capitalizing instrument names, writing out any numbers, and using the singular form (unless the instrument is always plural):</p>
-      <dl>
-        <dt>Yes:</dt>
-        <dd><kbd>Twelve-String Guitar</kbd></dd>
-        <dt>No:</dt>
-        <dd><kbd>12-string guitars</kbd></dd>
-      </dl>
+      <p><strong>Yes:</strong> <kbd>Twelve-String Guitar</kbd></p>
+      <p><strong>No:</strong> <kbd>12-string guitars</kbd></p>
     </fieldset>
 
     <fieldset id="altNames_fieldset">
@@ -24,7 +20,7 @@
       <ol>
         <li>
           <label for="altName0" class="visuallyhidden">Alternate Name:</label>
-          <input type="text" id="altName0" name="alt_name_0" autocapitalize="words" size="25" maxlength="128">
+          <input type="text" id="altName0" name="alt_name_0" class="name" autocapitalize="words" size="25" maxlength="128">
         </li>
       </ol>
       <button type="button" id="addAltName_btn">Add another name</button>
@@ -32,7 +28,7 @@
 
     <fieldset>
       <legend>Instrument Category</legend>
-      <ul>
+      <ul class="categories">
         {% for category in categories %}
           <li>
             <label for="category{{ category.id }}">
@@ -48,7 +44,7 @@
     <fieldset>
       <legend>Instrument Image <span class="optional">(optional)</span></legend>
       <label for="image">URL:</label>
-      <input type="url" id="image" name="image" placeholder="https://www.example.com/tuba.jpg" spellcheck="false" autocapitalize="none" size="512" pattern="https?.*">
+      <input type="url" id="image" name="image" class="url" placeholder="https://www.example.com/tuba.jpg" spellcheck="false" autocapitalize="none" size="512" pattern="https?.*">
       <p>Enter a public URL for an image of this instrument. Prefer URLs starting with "https" instead of "http" if possible. Ideally, the image should be close to square and must be under 300 KB (smaller than that is better).</p>
       <p>The URL must point to the image itself, rather than a webpage which includes the image. This frequently means that the URL should end in <code>.jpg</code>, <code>.png</code>, <code>.gif</code>, or another common image file extension.
     </fieldset>
@@ -57,10 +53,10 @@
       <legend>Instrument Description</legend>
       <p>Feel free to use paragraphs in your description (separate them with a blank line)! You can use other <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener">markdown</a> syntax as well, if you'd like (but not literal HTML tags).</p>
       <label for="description" class="visuallyhidden">Description</label>
-      <textarea id="description" name="description" autocapitalize="sentences" required maxlength="16384"></textarea>
+      <textarea id="description" name="description" class="description" autocapitalize="sentences" required maxlength="16384"></textarea>
     </fieldset>
 
-    <button type="submit">{% block button_text %}{% endblock %}</button>
+    <button type="submit" class="submit">{% block button_text %}{% endblock %}</button>
   </form>
 {% endblock content %}
 {% block scripts %}
