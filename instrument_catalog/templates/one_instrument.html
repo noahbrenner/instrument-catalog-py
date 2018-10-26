@@ -14,18 +14,20 @@
   </div>
   <img class="instrument-img" src="{{ instrument.get_image_url() }}" alt="{{ instrument.name }}">
 
-  <h3>Category</h3>
-  <a href="{{ url_for('one_category', category_id=instrument.category_id) }}">{{ instrument.category.name }}</a>
+  <div class="short-details">
+    <h3>Category</h3>
+    <a href="{{ url_for('one_category', category_id=instrument.category_id) }}">{{ instrument.category.name }}</a>
 
-  {% if instrument.alternate_names %}
-    <h3>Alternate Names</h3>
-    <ul class="alternate-names">
-      {% for alternate in instrument.alternate_names %}
-        <li>{{ alternate.name }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+    {% if instrument.alternate_names %}
+      <h3>Alternate Names</h3>
+      <ul class="alternate-names">
+        {% for alternate in instrument.alternate_names %}
+          <li>{{ alternate.name }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
 
-  <h3>Description</h3>
+  <h3 class="description">Description</h3>
   <section>{{ instrument.description | markdown }}</section>
 {% endblock content %}

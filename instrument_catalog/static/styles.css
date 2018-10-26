@@ -401,9 +401,8 @@ article h2 {
   flex: 1 0;
 }
 
-.instrument-detail .instrument-options li {
-  margin: 0;
-  padding: 0 1em;
+.instrument-detail .instrument-options a {
+  padding: 1em;
 }
 
 .instrument-detail .instrument-img {
@@ -584,10 +583,53 @@ h3 code {
 /*
  * Breakpoint adjustments
  */
+@media screen and (min-width: 440px) {
+  .instrument-detail main {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .instrument-detail .heading-box {
+    flex: 1 0 100%;
+    margin-bottom: 1em;
+    flex-wrap: wrap;
+  }
+
+  .instrument-detail .instrument-img {
+    width: 200px;
+    max-height: 300px;
+  }
+
+  .instrument-detail .short-details {
+    width: calc(100% - 200px);
+    padding-left: 20px;
+  }
+
+  .instrument-detail .short-details :first-child {
+    margin-top: 0;
+  }
+
+  .instrument-detail .alternate-names {
+    margin: 0;
+  }
+
+  .instrument-detail .heading-box h2,
+  .instrument-detail .description {
+    flex-basis: 100%;
+  }
+
+  .instrument-detail .heading-box a {
+    padding: 0.5em 0.5em 0.5em 0;
+  }
+}
 
 @media screen and (min-width: 500px) {
   .header-top h1 {
     width: auto;
     line-height: 2em;
+  }
+
+  .instrument-img {
+    width: 200px;
+    max-height: 300px;
   }
 }
