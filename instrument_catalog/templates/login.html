@@ -9,11 +9,14 @@
 {% endblock heading_container %}
 {% block content %}
   <form action="{{ url_for('google.login') }}" method="GET">
-    <button type="submit">Sign In with Google</button>
+    <button class="oauth-btn google-btn">
+      {% include "btn_google_dark_normal_ios.svg" %}
+      <div class="oauth-btn-text">Sign in with Google</div>
+    </button>
   </form>
   {% if config.ENV == 'development' %}
     <form action="{{ url_for('auth.login') }}" method="POST">
-      <button type="submit" title="Bypass the OAuth flow and authenticate as user 1">Sign In (dev mode)</button>
+      <button class="oauth-btn" type="submit" title="Bypass the OAuth flow and authenticate as user 1"><div class="oauth-btn-text">Sign in (dev mode)</div></button>
     </form>
   {% endif %}
   <p>Once you've signed in, you'll be able to create your own instrument pages! You'll be able to edit any that you've created and you'll have access to your very own page showing all the instruments you've contributed to the catalog.</p>

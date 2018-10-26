@@ -382,6 +382,46 @@ section h1 {
 }
 
 /*
+ * Log in page
+ */
+
+.oauth-btn {
+  display: flex;
+  margin: 1em auto;
+  padding: 0;
+  border-radius: 4px;
+  background: #ddd;
+  height: 46px;
+  line-height: 46px;
+  font-size: 14px;
+  cursor: default;
+}
+
+.oauth-btn-text {
+  padding: 0 1.5em;
+}
+
+.google-btn {
+  border: none;
+  background: #4285f4;
+  color: #fff;
+}
+
+/* Change SVG styles based on Google's `btn_google_dark_pressed_ios.svg` file: */
+/* https://developers.google.com/identity/branding-guidelines */
+.google-btn:active {
+  background: #3367d6;
+}
+
+.google-btn:active #path-2 {
+  fill: #3367d6;
+}
+
+.google-btn:active #path-3 {
+  fill: #eee;
+}
+
+/*
  * Instrument create/edit form
  */
 
