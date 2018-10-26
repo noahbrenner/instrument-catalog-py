@@ -33,7 +33,10 @@ article {
 }
 
 pre,
-code {
+code,
+kbd,
+input,
+textarea {
   font-family: 'Roboto Mono', monospace;
 }
 
@@ -452,6 +455,102 @@ section h1 {
 /*
  * API documentation
  */
+
+.api-key {
+  margin: 1em 0;
+}
+
+.api-key dt,
+.api-key dd {
+  display: inline-block;
+  margin: 0;
+  height: 1.5em;
+  line-height: 1.5em;
+  vertical-align: middle;
+}
+
+.api-key textarea {
+  overflow: auto;
+  resize: none;
+  text-align: center;
+}
+
+/*
+ * There are 3 code block renderings to style (and make consistent):
+ * 1. Inline: <code>X</code>
+ * 2. Block without highlighting: <pre><code>X</code></pre>
+ * 3. Block with highlighting: <div class="highlight"><pre>X</pre></div>
+ */
+
+/* Outer elements */
+
+pre,
+code,
+.highlight {
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  background: #f6f6f6;
+}
+
+code {
+  display: inline-block;
+  padding: 0.1em 0.2em;
+  line-height: 1;
+}
+
+/* Reset styles when `code` or `pre` are inner elements */
+
+pre code,
+.highlight pre {
+  border: none;
+  background: none;
+  padding: 0;
+  display: inline;
+  line-height: 1.6;
+}
+
+pre,
+.highlight {
+  overflow-x: auto;
+}
+
+h3 code {
+  /* Prevent horizontal scrolling on narrow viewports */
+  /* Not a pretty solution, but it's preferable to scrolling or more linebreaks */
+  word-break: break-all;
+}
+
+/* Highlighting inside code blocks */
+
+.nt /* Name Tag */ {
+  color: #00a;
+}
+
+.kc /* Keyword Constant */ {
+  color: #0a3;
+}
+
+.s1, /* Literal String Single */
+.s2 /* Literal String Double */ {
+  color: #c00;
+}
+
+.mi /* Literal Number Integer */ {
+  color: #808;
+}
+
+.c1 /* Comment Single */ {
+  color: #444;
+  font-style: italic;
+}
+
+.nv /* Name Variable */ {
+  color: #060;
+}
+
+.se /* Literal String Escape */ {
+  color: #c0c;;
+}
 
 /*
  * Breakpoint adjustments

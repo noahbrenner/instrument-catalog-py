@@ -5,7 +5,10 @@
   {# Get URLs dynamically so that we could mount the `api` blueprint on either a URL prefix or a subdomain and these instructions would still be correct. #}
   <p>All API endpoints are relative to <code>{{ url_for('api.not_found', _external=True)[:-1] }}</code>, so requests to the <code>/categories/</code> endpoint should be made to <code>{{ url_for('api.categories', _external=True) }}</code>.
   {% if current_user.is_authenticated %}
-    <p>Your API key: <code>{{ current_user.get_api_key() }}</code></p>
+    <dl class="api-key">
+      <dt>Your API key:</dt>
+      <dd><textarea cols="30" rows="1" readonly>{{ current_user.get_api_key() }}</textarea></dd>
+    </dl>
   {% else %}
     <p>Once you <a href="{{ url_for('auth.login') }}">Log in</a>, you can find your API key here.</p>
   {% endif %}

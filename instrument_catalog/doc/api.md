@@ -40,7 +40,7 @@ All responses are JSON objects with the following content:
 
 * `successful` (boolean): Whether or not the request succeeded.
 * `errors` (array[string]): Descriptions of each request error that was detected.
-* `data` (object or list[object]): The data you requested, if successful, otherwise an empty object. Every object returned, whether alone or in an array, is either a Category Object or an Instrument Object with the exception of `DELETE` requests (see below for details).
+* `data` (object or array[object]): The data you requested, if successful, otherwise an empty object. Every object returned, whether alone or in an array, is either a Category Object or an Instrument Object with the exception of `DELETE` requests (see below for details).
 
 The documentation for each endpoint will only describe the contents of `data` upon a successful request, as the other keys are identical for every endpoint.
 
@@ -82,11 +82,11 @@ An `Instrument Object` describes a single instrument. It has the following conte
 * `name` (string): The instrument's name.
 * `description` (string): The instrument's description in markdown format.
     * It should be written purely in markdown; literal HTML will be escaped.
-* `image` (string or null): If not `null`, a URL pointing to an image of the instrument.
-    * It must use `https` or `http` (`https` is preferred).
-    * It must point to a JPEG, PNG, or GIF image.
+* `image` (string or null): Unless `null`, a URL pointing to an image of the instrument.
+    * The protocol must be `https` or `http` (`https` is preferred).
+    * The URL must point to a JPEG, PNG, or GIF image.
     * The image must be under 300 KB (smaller is preferred)
-    * Images that are close to square are preferred.
+    * Images that are close to square are preferred (tall images will display squashed).
 * `category_id` (integer): The ID for the category to which this instrument belongs.
 * `alternate_names` (array[string]): An ordered list of alternate names for the instrument. The array may be empty.
     * There must be no duplicates in the list.
@@ -115,7 +115,7 @@ Endpoints
 
 Get the full list of instruments that you have created.
 
-#### Response `data`
+#### Response data:
 
 An array of Instrument Objects.
 
@@ -124,7 +124,7 @@ An array of Instrument Objects.
 
 Get the full list of instrument categories.
 
-#### Response `data`
+#### Response data:
 
 An array of Category Objects.
 
@@ -133,11 +133,11 @@ An array of Category Objects.
 
 Get data on a single instrument category.
 
-#### URL Parameter
+#### URL Parameter:
 
-`category_id` (integer): The ID of the category for which you are requesting data.
+`category_id` (integer): The ID of the category for which data is being requested.
 
-#### Response `data`
+#### Response data:
 
 A single Category Object.
 
@@ -146,11 +146,11 @@ A single Category Object.
 
 Get the list of instruments belonging to a single category.
 
-#### URL Parameter
+#### URL Parameter:
 
 `category_id` (integer): The ID of the category for which you are requesting data.
 
-#### Response `data`
+#### Response data:
 
 An array of Instrument Objects.
 
@@ -159,7 +159,7 @@ An array of Instrument Objects.
 
 Get the full list of instruments in the Instrument Catalog.
 
-#### Response `data`
+#### Response data:
 
 An array of Instrument Objects.
 
@@ -168,7 +168,7 @@ An array of Instrument Objects.
 
 Create a new instrument.
 
-#### JSON Request Parameters
+#### JSON Request Parameters:
 
 An instrument object, but with the following options and restrictions:
 
@@ -183,7 +183,7 @@ An instrument object, but with the following options and restrictions:
     * `id` (integer)
     * Any other key not named here
 
-#### Response `data`
+#### Response data:
 
 A single Instrument Object. Some transformations may be performed on your submitted data, such as removing excess whitespace.
 
@@ -192,11 +192,11 @@ A single Instrument Object. Some transformations may be performed on your submit
 
 Get data on a single instrument.
 
-#### URL Parameter
+#### URL Parameter:
 
 `instrument_id` (integer): The ID of the category for which you are requesting data.
 
-#### Response `data`
+#### Response data:
 
 A single Instrument Object.
 
@@ -205,11 +205,11 @@ A single Instrument Object.
 
 Update an instrument's data. For the request to succeed, you must be authenticated using the API key for the account that created this instrument.
 
-#### URL Parameter
+#### URL Parameter:
 
 `instrument_id` (integer): The ID of the instrument that you are attempting to modify.
 
-#### JSON Request Parameters
+#### JSON Request Parameters:
 
 An instrument object, but with the following options and restrictions:
 
@@ -227,7 +227,7 @@ An instrument object, but with the following options and restrictions:
 
 Only the specified Instrument Object attributes are updated, others are left unchanged. If there are any errors in the request, no changes are made.
 
-#### Response `data`
+#### Response data:
 
 A single Instrument Object. Some transformations may be performed on your submitted data, such as removing excess whitespace.
 
@@ -236,11 +236,11 @@ A single Instrument Object. Some transformations may be performed on your submit
 
 Delete an instrument from the Instrument Catalog. For the request to succeed, you must be authenticated using the API key for the account that created this instrument.
 
-#### URL Parameter
+#### URL Parameter:
 
 `instrument_id` (integer): The ID of the instrument that you are attempting to delete.
 
-#### Response `data`
+#### Response data:
 
 An object with a key of `"deleted_instrument_id"` and a value of the ID that the deleted instrument had before it was deleted.
 
@@ -252,4 +252,4 @@ An object with a key of `"deleted_instrument_id"` and a value of the ID that the
 }
 ```
 
-This request is idempotent; multiple requests will all return a status of `200 OK`.
+This request is idempotent; duplicate requests will also return a status of `200 OK`.
