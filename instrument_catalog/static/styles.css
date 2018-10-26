@@ -118,7 +118,7 @@ header {
   width: 45%;
   text-align: left;
   font-size: 2em;
-  line-height: 1.4;
+  line-height: 50px; /* Half the height of .header-top, since `h1` is 2 lines */
 }
 
 .menu-opener,
@@ -625,7 +625,7 @@ h3 code {
 @media screen and (min-width: 500px) {
   .header-top h1 {
     width: auto;
-    line-height: 2em;
+    line-height: 100px; /* The height of .header-top */
   }
 
   .instrument-img {
