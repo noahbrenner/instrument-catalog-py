@@ -123,7 +123,7 @@ function main() {
         var queryCategory = window.location.search.match(/[?&]c=(\d+)/);
 
         if (queryCategory && formFields['category' + queryCategory[1]]) {
-            formFields['category' + categorySearch[1]].checked = true;
+            formFields['category' + queryCategory[1]].checked = true;
         }
     }
 
