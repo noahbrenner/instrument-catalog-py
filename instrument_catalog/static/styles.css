@@ -331,6 +331,10 @@ section h1 {
   text-align: center;
 }
 
+article h2 {
+  margin-bottom: 0;
+}
+
 .new-instrument-label h3 {
   display: inline-block;
   margin: 1.25em 0 0.5em;
@@ -382,6 +386,31 @@ section h1 {
   width: 40vw;
   max-height: 60vw;
   background: #ddd;
+}
+
+/*
+ * Instrument detail page
+ */
+
+.instrument-detail .heading-box {
+  display: flex;
+}
+
+.instrument-detail .heading-box h2 {
+  margin: 0;
+  flex: 1 0;
+}
+
+.instrument-detail .instrument-options li {
+  margin: 0;
+  padding: 0 1em;
+}
+
+.instrument-detail .instrument-img {
+  float: none;
+  margin: 0;
+  width: 100vw;
+  max-height: 150vw;
 }
 
 /*
