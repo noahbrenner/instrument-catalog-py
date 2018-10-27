@@ -107,15 +107,23 @@ img {
  */
 
 .header-top {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-flow: column wrap;
-  align-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: column wrap;
+          flex-flow: column wrap;
+  -ms-flex-line-pack: justify;
+      align-content: space-between;
   height: 100px;
   border-bottom: 4px solid #bbc;
 }
 
 .header-top > * {
-  flex: 1 0 100%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 100%;
+          flex: 1 0 100%;
 }
 
 .logo-container,
@@ -135,7 +143,8 @@ img {
 .menu-opener,
 .login,
 .logout {
-  flex-basis: 40%; /* If set to 50%, Firefox splits these items onto 2 lines */
+  -ms-flex-preferred-size: 40%;
+      flex-basis: 40%; /* If set to 50%, Firefox splits these items onto 2 lines */
   line-height: 2em;
 }
 
@@ -175,6 +184,8 @@ nav {
   border: 40px solid rgba(0, 0, 0, 0.5);
   padding: 2em;
   background: #fff;
+  -webkit-transition: left 0.25s ease;
+  -o-transition: left 0.25s ease;
   transition: left 0.25s ease;
 }
 
@@ -205,8 +216,14 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  transform: translate(0, 0);
+  -webkit-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+          transform: translate(0, 0);
+  -webkit-transition: -webkit-transform 0.25s ease;
+  transition: -webkit-transform 0.25s ease;
+  -o-transition: transform 0.25s ease;
   transition: transform 0.25s ease;
+  transition: transform 0.25s ease, -webkit-transform 0.25s ease;
   /* Dimensions match `nav` border width */
   width: 40px;
   height: 40px;
@@ -217,7 +234,9 @@ body {
 }
 
 .menu-closed .menu-closer {
-  transform: translate(100vw, 0);
+  -webkit-transform: translate(100vw, 0);
+      -ms-transform: translate(100vw, 0);
+          transform: translate(100vw, 0);
 }
 
 .menu-closer abbr {
@@ -295,6 +314,15 @@ nav ul {
   list-style: none;
 }
 
+@-webkit-keyframes fadein {
+  from {
+    background: #fff;
+  }
+  to {
+    background: #ff0;
+  }
+}
+
 @keyframes fadein {
   from {
     background: #fff;
@@ -309,7 +337,8 @@ nav ul {
   border: 1px solid #aaa;
   text-align: center;
   font-style: italic;
-  animation: 0.75s ease-in-out 1s 2 alternate fadein;
+  -webkit-animation: 0.75s ease-in-out 1s 2 alternate fadein;
+          animation: 0.75s ease-in-out 1s 2 alternate fadein;
 }
 
 /*
@@ -334,9 +363,16 @@ section h1 {
 }
 
 .intro-links {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
 }
 
 .intro-links a {
@@ -410,12 +446,16 @@ article h2 {
  */
 
 .instrument-detail .heading-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 
 .instrument-detail .heading-box h2 {
   margin: 0;
-  flex: 1 0;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0;
+          flex: 1 0;
 }
 
 .instrument-detail .instrument-options a {
@@ -438,6 +478,8 @@ article h2 {
  */
 
 .oauth-btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   margin: 1em auto;
   padding: 0;
@@ -613,8 +655,12 @@ h3 code {
   }
 
   .instrument-detail .short-details-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
   }
 
   .instrument-detail .instrument-img {
@@ -652,13 +698,19 @@ h3 code {
   }
 
   .header-top {
-    justify-content: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
   }
 
   .login,
   .logout {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex: 0 0 auto;
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+            flex: 0 0 auto;
   }
 
   /* Turn modal menu into a nav bar that is always visible */
@@ -679,12 +731,17 @@ h3 code {
   }
 
   .nav-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: space-around;
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
   }
 
   .nav-list > li {
-    flex: 1 1 auto;
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
     text-align: center;
   }
 
