@@ -34,7 +34,7 @@
             <li><a href="{{ url_for('my_instruments') }}">My Instruments</a></li>
             <li><a href="{{ url_for('new_instrument') }}">Create New Instrument</a></li>
           {% endif %}
-          <li>
+          <li class="nav-parent">
             <a href="{{ url_for('all_categories') }}">Categories</a>
             <ul>
               {% for category in categories %}

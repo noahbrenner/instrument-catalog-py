@@ -28,10 +28,15 @@ body {
   font: 16px/1.6 Roboto, sans-serif;
 }
 
+body {
+  background: #eed;
+}
+
 header,
 .container,
 footer {
   padding: 1em;
+  background: #fff;
 }
 
 .container {
@@ -106,7 +111,7 @@ img {
   flex-flow: column wrap;
   align-content: space-between;
   height: 100px;
-  border-bottom: 1px solid #aaa;
+  border-bottom: 4px solid #bbc;
 }
 
 .header-top > * {
@@ -631,5 +636,98 @@ h3 code {
   .instrument-img {
     width: 200px;
     max-height: 300px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  header,
+  .container,
+  footer {
+    margin: 0 auto;
+    max-width: 800px;
+  }
+
+  .header-top {
+    justify-content: center;
+  }
+
+  .login,
+  .logout {
+    display: flex;
+    flex: 0 0 auto;
+  }
+
+  /* Turn modal menu into a nav bar that is always visible */
+
+  nav {
+    position: static;
+    border: none;
+    border-bottom: 2px solid #bbc;
+    padding: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  .menu-toggle,
+  .nav-heading {
+    display: none;
+  }
+
+  .nav-list {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .nav-list > li {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .nav-list a {
+    width: 100%;
+  }
+
+  .nav-list a:hover,
+  .nav-list a:active,
+  .nav-list a:focus {
+    background: #eed;
+    color: #000;
+  }
+
+  /* Hide/show sub-menu based on hover/focus state */
+  /* TODO Make sub-menu visible when sub-menu items are keyboard-focused */
+
+  .nav-list ul {
+    /* This is the same CSS as .visuallyhidden */
+    position: absolute;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    white-space: nowrap;
+  }
+
+  .nav-parent:hover ul,
+  .nav-parent a:focus ~ ul {
+    border: 2px solid #bbc;
+    background: white;
+    /* Undo hiding */
+    margin: 0;
+    height: auto;
+    width: auto;
+    clip: auto;
+  }
+
+  .nav-parent:hover li,
+  .nav-parent a:focus ~ ul li {
+    border: 1px solid #bbc;
+  }
+
+  .nav-parent:hover li a,
+  .nav-parent a:focus ~ ul a {
+    padding: 0 1em;
   }
 }
