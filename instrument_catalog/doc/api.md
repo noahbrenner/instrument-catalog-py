@@ -81,7 +81,6 @@ An `Instrument Object` describes a single instrument. It has the following conte
 * `id` (integer): The instrument's unique ID.
 * `name` (string): The instrument's name.
 * `description` (string): The instrument's description in markdown format.
-    * It should be written purely in markdown; literal HTML will be escaped.
 * `image` (string or null): Unless `null`, a URL pointing to an image of the instrument.
     * The protocol must be `https` or `http` (`https` is preferred).
     * The URL must point to a JPEG, PNG, or GIF image.
@@ -107,6 +106,10 @@ An `Instrument Object` describes a single instrument. It has the following conte
     ]
 }
 ```
+
+#### Important security concern:
+
+When retrieving an Instrument Object, care should be taken if you include any of the data on a website. The data may include literal HTML submitted by the user who created the instrument (beware of `<script>` tags). On the Instrument Catalog website, HTML tags are escaped before rendering, including any literal tags written along with markdown in the `description` field. However, the API provides you with the raw, unescaped data. If you use the contents of an Instrument Object on any website, you should escape (or *very* carefully validate) the HTML. This should be done *before* rendering markdown.
 
 Endpoints
 ---------
