@@ -6,24 +6,6 @@
 function main() {
 
 
-// Show/hide the navigation menu
-(function () {
-    var toggles = document.getElementsByClassName('menu-toggle');
-
-    function toggleMenu(event) {
-        document.documentElement.classList.toggle('menu-closed');
-        event.preventDefault();
-    }
-
-    Array.prototype.forEach.call(toggles, function (element) {
-        element.addEventListener('click', toggleMenu);
-    });
-
-    // Now that the menu can be toggled, disable "no-JS" styling (hide the menu)
-    document.documentElement.classList.remove('nojs');
-})();
-
-
 // Add "back" functionality when the page has an element with id="back-link"
 // Thanks to https://stackoverflow.com/a/46163215 for inspiration
 (function () {

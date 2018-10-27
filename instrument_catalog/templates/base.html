@@ -66,5 +66,24 @@
       </main>
     </div>
     <footer>Site created by <a href="https://noahbrenner.github.io/">Noah Brenner</a>. Find the source code <a href="https://github.com/noahbrenner/instrument-catalog-py">on GitHub</a>.</footer>
+    <script>
+// Show/hide the navigation menu 
+// This function is included inline so that the 'nojs' menu doesn't flash while waiting for the external script file to load
+(function () {
+    var toggles = document.getElementsByClassName('menu-toggle');
+
+    function toggleMenu(event) {
+        document.documentElement.classList.toggle('menu-closed');
+        event.preventDefault();
+    }
+
+    Array.prototype.forEach.call(toggles, function (element) {
+        element.addEventListener('click', toggleMenu);
+    });
+
+    // Now that the menu can be toggled, disable "no-JS" styling (hide the menu)
+    document.documentElement.classList.remove('nojs');
+})();
+    </script>
   </body>
 </html>
