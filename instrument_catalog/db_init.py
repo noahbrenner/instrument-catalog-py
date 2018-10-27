@@ -20,14 +20,15 @@ def init():
     db.session.add(user1)
 
     if flask.current_app.env == 'production':
-        print('Initiating database rows in PRODUCTION environment')
         # Associate all generated rows with the same admin user
         user2 = user1
     else:
-        print('Initiating database rows in DEVELOPMENT environment')
         # Create an additional user to help with testing permissions
         user2 = User(name='Admin2')
         db.session.add(user2)
+
+    print('Creating database rows in {env} environment.'
+          .format(flask.current_app.env.upper()))
 
     # === Create categories ===
 
