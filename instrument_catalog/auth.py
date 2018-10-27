@@ -91,8 +91,9 @@ def login_completed(blueprint, token):
 
     remember = current_app.env != 'development'  # Only use a cookie in prod
     login_user(user, remember=remember)
-    flash('Successfully logged in with {oauth_provider}!'
-          .format(oauth_provider=user.oauth_provider.capitalize()))
+    flash('Welcome, {name}! You just logged in using {oauth_provider}!'
+          .format(name=user.name,
+                  oauth_provider=user.oauth_provider.capitalize()))
 
     return redirect(url_for('my_instruments')), 303  # See Other
 
