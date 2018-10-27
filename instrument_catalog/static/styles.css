@@ -240,10 +240,6 @@ nav ul {
   color: #d11;
 }
 
-.nav-github {
-  margin-top: 1.5em;
-}
-
 /* Without JavaScript */
 
 .nojs body {
@@ -311,6 +307,18 @@ nav ul {
 
 .container {
   margin: 1em;
+}
+
+footer {
+  margin-top: 2em;
+  padding: 1em;
+  text-align: center;
+  background: #444;
+  color: #fff;
+}
+
+footer a {
+  color: #bcf;
 }
 
 section h1 {

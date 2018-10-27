@@ -44,7 +44,6 @@
           </li>
           <li><a href="{{ url_for('all_instruments') }}">All instruments</a></li>
           <li><a href="{{ url_for('documentation.api') }}">API</a></li>
-          <li class="nav-github"><a href="https://github.com/noahbrenner/instrument-catalog-py">Source on GitHub</a></li>
         </ul>
       </nav>
       {% with messages = get_flashed_messages() %}
@@ -66,5 +65,6 @@
         {% block content %}{% endblock %}
       </main>
     </div>
+    <footer>Site created by <a href="https://noahbrenner.github.io/">Noah Brenner</a>. Find the source code <a href="https://github.com/noahbrenner/instrument-catalog-py">on GitHub</a>.</footer>
   </body>
 </html>
