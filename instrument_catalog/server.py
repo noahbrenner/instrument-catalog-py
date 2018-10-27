@@ -34,6 +34,7 @@ bleach_args = dict(
 
 @app.template_filter('markdown')
 def markdown_filter(data, inline=False):
+    """Markdown filter for use in HTML templates."""
     return Markup(bleach.clean(markdown(data), **bleach_args))
 
 
@@ -45,6 +46,7 @@ def inject_template_data():
 
 @app.errorhandler(404)
 def not_found(error=None):
+    """Handle requests for unknown paths."""
     return render_template('error.html'), 404  # Not Found
 
 

@@ -42,8 +42,9 @@ def require_authentication():
     # directly verifying every request that is processed by this blueprint.
     # Because of the wildcard 'api.not_found' route, any request starting with
     # the URL prefix (or subdomain) associated with this blueprint will cause
-    # this `before_request` handler to be called. Benefits of this approach:
+    # this `before_request` handler to be called.
     #
+    # Benefits of this approach:
     #  - All possible endpoints are handled at once, including non-existent
     #    or misspelled ones.
     #  - A session cookie is not sent for any intended API request.
@@ -66,7 +67,13 @@ def rate_limit_handler(error):
 # Custom markdown rendering
 
 class CodeHighlightRenderer(mistune.Renderer):
+    """Custom highlight class for rendering markdown with mistune.
+
+    This class adds support for syntax highlighting of markdown code
+    blocks via HTML class attributes.
+    """
     def block_code(self, code, lang):
+        """Override method to make use of `pygments` in code blocks."""
         if lang:
             lexer = pygments.lexers.get_lexer_by_name(lang, stripall=True)
             formatter = pygments.formatters.html.HtmlFormatter()
@@ -81,6 +88,7 @@ markdown = mistune.Markdown(renderer=CodeHighlightRenderer())
 
 @documentation_bp.app_template_filter('doc_markdown')
 def doc_markdown_filter(data, inline=False):
+    """Markdown filter for use in API doc template."""
     return Markup(markdown(data))
 
 
@@ -159,6 +167,7 @@ def instruments():
           methods=['GET', 'PUT', 'DELETE'])
 @rate_limit
 def one_instrument(instrument_id):
+    """API endpoint for retrieving, updating, or deleting instruments."""
     instrument = Instrument.query.get(instrument_id)
 
     # We can't return or modify a non-existent instrument, but DELETE is OK

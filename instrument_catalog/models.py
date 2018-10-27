@@ -1,3 +1,9 @@
+"""
+instrument_catalog.models
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Defines classes for interfacing with the app's database.
+"""
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import URLSafeSerializer, BadData
@@ -8,7 +14,7 @@ serializer = None  # Will hold an instance of URLSafeSerializer
 
 
 def get_serializer():
-    """Returns an instance or URLSafeSerializer."""
+    """Return an instance of URLSafeSerializer."""
     global serializer
 
     # We need access to our app's secret key to create the serializer, but we
@@ -24,6 +30,8 @@ def get_serializer():
 
 
 class User(db.Model):
+    """Class representing a user."""
+
     __table_args__ = (
         db.UniqueConstraint('oauth_provider', 'provider_user_id',
                             name='unique_oauth_id'),
@@ -39,7 +47,7 @@ class User(db.Model):
 
     is_authenticated = True  # flask-login only sees this after authentication
     is_active = True  # We have not yet implemented deactivation of accounts
-    is_anonymous = False
+    is_anonymous = False  # Always false when this class is used
 
     def get_id(self):
         """Return a Unicode representation of the user ID."""
@@ -67,11 +75,14 @@ class User(db.Model):
 
 
 class Category(db.Model):
+    """Class representing an instrument category."""
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
     description = db.Column(db.String(16384), nullable=False)
 
     def serialize(self):
+        """Return a dict of the category's information."""
         return {
             'id': self.id,
             'name': self.name,
@@ -80,6 +91,8 @@ class Category(db.Model):
 
 
 class AlternateInstrumentName(db.Model):
+    """Class representing an alternate name for an instrument."""
+
     __table_args__ = (
         # Each name has a unique sort order for a given instrument
         db.UniqueConstraint('instrument_id', 'index',
@@ -93,6 +106,8 @@ class AlternateInstrumentName(db.Model):
 
 
 class Instrument(db.Model):
+    """Class representing an alternate name for a given instrument."""
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
     description = db.Column(db.String(16384), nullable=False)
@@ -116,6 +131,12 @@ class Instrument(db.Model):
         return self.image or '/static/logo.svg'
 
     def serialize(self):
+        """Return a dict of the instrument's information.
+
+        The user ID is intentionally left out, since this data is
+        public-facing through the API and we're not currently making
+        public which users created which instruments.
+        """
         return {
             'id': self.id,
             'name': self.name,

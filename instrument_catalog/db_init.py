@@ -14,6 +14,7 @@ from .models import db, User, Category, Instrument, AlternateInstrumentName
 
 def init():
     """Initialize rows in the database."""
+
     # === Create users ===
 
     user1 = User(name='Admin1')

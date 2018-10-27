@@ -65,12 +65,14 @@ def require_login():
 
 @oauth_error.connect
 def login_failed(*args, **kwargs):
+    """Handle failed OAuth connections."""
     flash('You did not log in. Please try again.')
     return redirect(url_for('auth.login')), 302  # Found
 
 
 @oauth_authorized.connect
 def login_completed(blueprint, token):
+    """Handle successful OAuth connections."""
     if blueprint.name == 'google':
         user_data = google.get('/oauth2/v2/userinfo').json()
         # => locale, given_name, link, id, name, family_name, picture, gender

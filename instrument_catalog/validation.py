@@ -2,7 +2,7 @@
 instrument_catalog.validation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Validates user input from instrument create/edit form.
+Validates user input from instrument create/edit form or from the API.
 """
 import re
 from flask import flash, request
@@ -12,7 +12,17 @@ from .models import Category, Instrument, AlternateInstrumentName
 
 
 def collapse_spaces(string=None, markdown_compatible=False):
-    """Strip outer and extra internal whitespace, preserving newlines."""
+    """Strip outer and extra internal whitespace, preserving newlines.
+
+    Args:
+        string (str): The string from which to remove whitespace.
+        markdown_compatible (bool): If True, be conservative in removing
+                                    whitespace to avoid changing the
+                                    meaning of markdown.
+
+    Returns:
+        str: The input string with excess whitespace removed.
+    """
     if markdown_compatible:
         # Don't remove inner whitespace in case the user intended a <br>
         # by writing trailing spaces on a line other than the last one.
@@ -21,29 +31,39 @@ def collapse_spaces(string=None, markdown_compatible=False):
         return re.sub(r'\s+', ' ', string.strip()) if string else string
 
 
-def get_alternate_instrument_names(form):
-    """Return a normalized list of alternate names from form input."""
+def get_alternate_instrument_names(data):
+    """Return a normalized list of alternate names.
+
+    Args:
+        data (dict): A dict from which to extract alternate instrument
+                     names.  It may be from a website form or from an
+                     API request.
+
+    Returns:
+        list[str]: Alternate names with excess whitespace removed.
+    """
     # From the API, we receive a list of alternate names directly
-    if 'alternate_names' in form:
-        if isinstance(form.get('alternate_names'), list):
+    if 'alternate_names' in data:
+        if isinstance(data.get('alternate_names'), list):
             alt_names = [collapse_spaces(str(name))
-                         for name in form['alternate_names']
+                         for name in data['alternate_names']
                          if name]
         else:
             flash('`alternate_names` must be an array of strings.')
             alt_names = []
 
-    # From the HTML form, each alternate name is a separate field
+    # With the HTML form, each alternate name is a separate field
     else:
         alt_names = []
 
+        # The HTML form only allows 10 alternate names
         for index in range(10):
             name_key = 'alt_name_{}'.format(index)
 
-            if name_key not in form:
+            if name_key not in data:
                 break
 
-            name = collapse_spaces(str(form.get(name_key, '')))
+            name = collapse_spaces(str(data.get(name_key, '')))
 
             if name is not '':
                 alt_names.append(name)
@@ -52,7 +72,16 @@ def get_alternate_instrument_names(form):
 
 
 def validate_image_url(url):
-    """Return validity of an image URL and the result of any redirection."""
+    """Return validity of an image URL and the result of any redirection.
+
+    Args:
+        url (str): The image URL to validate.
+
+    Returns:
+        tuple[str, bool]: The image URL and whether it is valid. The URL
+                          may be different from what was passed in if
+                          the host server sent a redirect status code.
+    """
     is_valid = True
 
     # Test: URL uses http(s)
@@ -97,12 +126,15 @@ def validate_image_url(url):
     return url, is_valid
 
 
-def get_validated_instrument_data(form, existing_instrument=None):
-    """Validate and return normalized data from instrument form or API.
+def get_validated_instrument_data(data, existing_instrument=None):
+    """Validate and return normalized instrument data.
+
+    This validation function is used for data submitted either through
+    the website form or through the API.
 
     Args:
         existing_instrument (Instrument): An optional argument, only
-            needed when the key 'name' is not included in `form`.
+            needed when the key 'name' is not included in `data`.
 
     Returns:
         tuple[dict, bool]: The normalized data and whether it is valid.
@@ -111,7 +143,7 @@ def get_validated_instrument_data(form, existing_instrument=None):
     """
     is_valid = True
 
-    # === Copy form data into `instrument` and normalize values === #
+    # === Copy data into `instrument` and normalize values === #
 
     instrument = {}
 
@@ -119,12 +151,12 @@ def get_validated_instrument_data(form, existing_instrument=None):
     instrument_table_columns = ['name', 'description', 'image', 'category_id']
 
     for key in instrument_table_columns:
-        if key in form:
+        if key in data:
             instrument[key] = collapse_spaces(
-                str(form.get(key, '')),
+                str(data.get(key, '')),
                 markdown_compatible=(key == 'description'))
 
-    alternate_names = get_alternate_instrument_names(form)
+    alternate_names = get_alternate_instrument_names(data)
     if alternate_names:
         instrument['alternate_names'] = alternate_names
 
@@ -176,6 +208,11 @@ def get_validated_instrument_data(form, existing_instrument=None):
         if len(alternate_names) > len(set(alternate_names)):
             is_valid = False
             flash('Alternate names must not duplicate other alternate names.')
+
+        # Test: There are no more than 10 alternate names
+        if len(alternate_names) > 10:
+            is_valid = False
+            flash('You can not specify more than 10 alternate names.')
 
     if instrument['category_id']:
         # If the value is '', it has already been reported as missing
