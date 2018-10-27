@@ -81,7 +81,6 @@ markdown = mistune.Markdown(renderer=CodeHighlightRenderer())
 
 @documentation_bp.app_template_filter('doc_markdown')
 def doc_markdown_filter(data, inline=False):
-    print('Received call to render markdown.')
     return Markup(markdown(data))
 
 
