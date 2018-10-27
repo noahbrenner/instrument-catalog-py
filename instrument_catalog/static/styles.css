@@ -420,6 +420,10 @@ article h2 {
   max-height: 150vw;
 }
 
+.instrument-detail .alternate-names {
+  margin: 0;
+}
+
 /*
  * Log in page
  */
@@ -591,15 +595,17 @@ h3 code {
 /*
  * Breakpoint adjustments
  */
+
 @media screen and (min-width: 440px) {
-  .instrument-detail main {
-    display: flex;
-    flex-wrap: wrap;
-  }
   .instrument-detail .heading-box {
-    flex: 1 0 100%;
+    display: block;
     margin-bottom: 1em;
-    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .instrument-detail .short-details-container {
+    display: flex;
+    justify-content: center;
   }
 
   .instrument-detail .instrument-img {
@@ -608,25 +614,11 @@ h3 code {
   }
 
   .instrument-detail .short-details {
-    width: calc(100% - 200px);
-    padding-left: 20px;
+    margin-left: 20px;
   }
 
   .instrument-detail .short-details :first-child {
     margin-top: 0;
-  }
-
-  .instrument-detail .alternate-names {
-    margin: 0;
-  }
-
-  .instrument-detail .heading-box h2,
-  .instrument-detail .description {
-    flex-basis: 100%;
-  }
-
-  .instrument-detail .heading-box a {
-    padding: 0.5em 0.5em 0.5em 0;
   }
 }
 
