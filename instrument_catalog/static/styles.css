@@ -28,6 +28,16 @@ body {
   font: 16px/1.6 Roboto, sans-serif;
 }
 
+header,
+.container,
+footer {
+  padding: 1em;
+}
+
+.container {
+  padding-bottom: 2.5em;
+}
+
 article {
   overflow: auto;
 }
@@ -90,10 +100,6 @@ img {
 /* 
  * Header
  */
-
-header {
-  padding: 1em;
-}
 
 .header-top {
   display: flex;
@@ -305,13 +311,7 @@ nav ul {
  * Main content
  */
 
-.container {
-  margin: 1em;
-}
-
 footer {
-  margin-top: 2em;
-  padding: 1em;
   text-align: center;
   background: #444;
   color: #fff;
