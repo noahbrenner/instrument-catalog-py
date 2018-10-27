@@ -333,10 +333,14 @@ section h1 {
   width: 90%;
 }
 
+.intro-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .intro-links a {
-  display: block;
   height: 40px;
-  text-align: right;
 }
 
 .create-instrument-link {
@@ -668,6 +672,7 @@ h3 code {
     height: auto;
   }
 
+  .intro-links, /* Now shown in nav bar */
   .menu-toggle,
   .nav-heading {
     display: none;
