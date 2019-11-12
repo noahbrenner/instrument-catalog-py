@@ -70,10 +70,23 @@ def run_migrations_online():
                                 poolclass=pool.NullPool)
 
     connection = engine.connect()
-    context.configure(connection=connection,
-                      target_metadata=target_metadata,
-                      process_revision_directives=process_revision_directives,
-                      **current_app.extensions['migrate'].configure_args)
+
+    # We're setting `render_as_batch` below when using sqlite, since that
+    # engine doesn't support dropping columns of an existing table:
+    # https://github.com/miguelgrinberg/Flask-Migrate/issues/61#issuecomment-158679691
+
+    # The existing migration version files also needed to be edited:
+    # https://www.youtube.com/watch?v=CxCK1DkikgA
+
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        process_revision_directives=process_revision_directives,
+        render_as_batch=(
+            config.get_main_option('sqlalchemy.url').startswith('sqlite:///')
+        ),
+        **current_app.extensions['migrate'].configure_args
+    )
 
     try:
         with context.begin_transaction():
