@@ -21,8 +21,12 @@ Installation
    ```bash
    $ pipenv --python 3
 
-   # The `--ignore-pipfile` option is optional but recommended so that you
-   # install the same dependency versions as those used in development.
+   # Use one of the following:
+
+   # Install dependencies exactly as defined in Pipfile.lock (recommended)
+   $ pipenv sync
+
+   # Or install dependencies based only on versions in Pipfile
    $ pipenv install --ignore-pipfile
    ```
 

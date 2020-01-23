@@ -29,7 +29,7 @@ def init():
         db.session.add(user2)
 
     print('Creating database rows in {env} environment.'
-          .format(flask.current_app.env.upper()))
+          .format(env=flask.current_app.env.upper()))
 
     # === Create categories ===
 
